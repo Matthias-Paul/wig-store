@@ -3,14 +3,16 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-// import { initFirebaseAdmin } from './firebase/firebase-admin.provider';
+import { initFirebaseAdmin } from './firebase/firebase-admin.provider';
 
 async function bootstrap() {
-  // initFirebaseAdmin();
+  initFirebaseAdmin();
 
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.use(helmet());
+
+  app.setGlobalPrefix('api/v1');
 
   app.enableCors({
     origin: process.env.FRONTEND_URL,

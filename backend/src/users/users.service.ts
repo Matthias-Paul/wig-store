@@ -11,7 +11,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
   ) {}
-  
+
   findById(id: string) {
     return this.userRepo.findOne({ where: { id } });
   }
