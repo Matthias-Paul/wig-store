@@ -10,7 +10,11 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthorizeGuard } from './common/guards/authorize.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
-
+import { ProductsModule } from './products/products.module';
+import { Category } from './categories/entities/category.entity';
+import { Product } from './products/entities/product.entity';
+import { ProductVariant } from './products/entities/product-variant.entity';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -27,13 +31,15 @@ import { JwtModule } from '@nestjs/jwt';
         autoLoadEntities: configService.get<boolean>(
           'database.autoLoadEntities',
         ),
-        entities: [User],
+        entities: [User, Category, Product, ProductVariant],
         synchronize: configService.get<boolean>('database.synchronize'),
         logging: configService.get<boolean>('database.logging'),
       }),
     }),
     UsersModule,
     AuthModule,
+    ProductsModule,
+    CategoriesModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthorizeGuard }, // runs first
