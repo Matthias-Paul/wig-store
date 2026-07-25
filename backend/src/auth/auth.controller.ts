@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get } from '@nestjs/common';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { AllowAnonymous } from 'src/common/decorators/allow-anonymous.decorator';
+import { ActiveUser } from 'src/common/decorators/active-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -40,5 +41,10 @@ export class AuthController {
         profileImage: user.profileImage,
       },
     };
+  }
+
+  @Get('me')
+  public async getProfile(@ActiveUser('sub') userId: string) {
+    return this.authService.getProfile(userId);
   }
 }
