@@ -2,11 +2,13 @@ import { Controller, Post, Body, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleAuthDto } from './dto/google-auth.dto';
+import { AllowAnonymous } from 'src/common/decorators/allow-anonymous.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @AllowAnonymous()
   @Post('google')
   public async googleAuth(
     @Body() googleAuthDto: GoogleAuthDto,
