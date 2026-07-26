@@ -15,6 +15,7 @@ import { GetProductsQueryDto } from './dtos/get-products-query.dto';
 import { AllowAnonymous } from '../common/decorators/allow-anonymous.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
+import { UpdateProductStatusDto } from './dtos/update-product-status.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -26,6 +27,18 @@ export class ProductsController {
     return this.productsService.findAll(query);
   }
 
+  @Get('admin/all')
+  @Roles(UserRole.ADMIN)
+  findAllForAdmin(@Query() query: GetProductsQueryDto) {
+    return this.productsService.findAllForAdmin(query);
+  }
+
+  @Patch(':id/status')
+  @Roles(UserRole.ADMIN)
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateProductStatusDto) {
+    return this.productsService.updateStatus(id, dto);
+  }
+  
   @Get(':slug')
   @AllowAnonymous()
   findBySlug(@Param('slug') slug: string) {

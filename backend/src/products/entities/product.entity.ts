@@ -11,13 +11,14 @@ import {
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
 import { ProductVariant } from './product-variant.entity';
+import { ProductStatus } from 'src/common/enums/product-status.enum';
 
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Index() 
+  @Index()
   @Column()
   name: string;
 
@@ -29,6 +30,9 @@ export class Product {
 
   @Column({ type: 'text', array: true, default: [] })
   images: string[];
+
+  @Column({ type: 'enum', enum: ProductStatus, default: ProductStatus.DRAFT })
+  status: ProductStatus;
 
   @ManyToOne(() => Category, (category) => category.products, {
     nullable: false,

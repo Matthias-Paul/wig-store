@@ -11,6 +11,8 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { GetProductsQueryDto } from './dtos/get-products-query.dto';
 import { slugify } from '../common/utils/slugify';
+import { ProductStatus } from 'src/common/enums/product-status.enum';
+import { UpdateProductStatusDto } from './dtos/update-product-status.dto';
 
 interface VariantCountRow {
   productId: string;
@@ -24,6 +26,85 @@ export class ProductsService {
   ) {}
 
   async findAll(query: GetProductsQueryDto) {
+    const {
+      search,
+      categoryId,
+      minPrice,
+      maxPrice,
+      page = 1,
+      limit = 10,
+    } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.productRepo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .where('product.status = :status', { status: ProductStatus.PUBLISHED });
+
+    if (search) {
+      qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    if (categoryId) {
+      qb.andWhere('category.id = :categoryId', { categoryId });
+    }
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      qb.andWhere(
+        `EXISTS (
+        SELECT 1 FROM product_variants pv
+        WHERE pv.product_id = product.id
+        ${minPrice !== undefined ? 'AND pv.price >= :minPrice' : ''}
+        ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''}
+      )`,
+        { minPrice, maxPrice },
+      );
+    }
+
+    const [products, total] = await qb
+      .orderBy('product.createdAt', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    // Fetch variant counts for just this page of products, in one query
+    const productIds = products.map((p) => p.id);
+    let variantCounts: Record<string, number> = {};
+
+    if (productIds.length > 0) {
+      const counts = await this.productRepo.manager
+        .createQueryBuilder()
+        .select('variant.product_id', 'productId')
+        .addSelect('COUNT(*)', 'count')
+        .from('product_variants', 'variant')
+        .where('variant.product_id IN (:...productIds)', { productIds })
+        .groupBy('variant.product_id')
+        .getRawMany<VariantCountRow>();
+
+      variantCounts = counts.reduce((acc: Record<string, number>, row) => {
+        acc[row.productId] = parseInt(row.count, 10);
+        return acc;
+      }, {});
+    }
+
+    const productsWithCount = products.map((product) => ({
+      ...product,
+      variantCount: variantCounts[product.id] ?? 0,
+    }));
+
+    return {
+      products: productsWithCount,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page * limit < total,
+      },
+    };
+  }
+
+  async findAllForAdmin(query: GetProductsQueryDto) {
     const {
       search,
       categoryId,
@@ -71,11 +152,11 @@ export class ProductsService {
     if (productIds.length > 0) {
       const counts = await this.productRepo.manager
         .createQueryBuilder()
-        .select('variant.productId', 'productId')
+        .select('variant.product_id', 'productId')
         .addSelect('COUNT(*)', 'count')
         .from('product_variants', 'variant')
-        .where('variant.productId IN (:...productIds)', { productIds })
-        .groupBy('variant.productId')
+        .where('variant.product_id IN (:...productIds)', { productIds })
+        .groupBy('variant.product_id')
         .getRawMany<VariantCountRow>();
 
       variantCounts = counts.reduce((acc: Record<string, number>, row) => {
@@ -103,7 +184,7 @@ export class ProductsService {
 
   async findBySlug(slug: string) {
     const product = await this.productRepo.findOne({
-      where: { slug },
+      where: { slug, status: ProductStatus.PUBLISHED },
       relations: { category: true, variants: true },
     });
     if (!product) {
@@ -123,6 +204,26 @@ export class ProductsService {
     return product;
   }
 
+  async updateStatus(id: string, dto: UpdateProductStatusDto) {
+    const product = await this.findById(id);
+
+    if (dto.status === ProductStatus.PUBLISHED) {
+      if (!product.variants || product.variants.length === 0) {
+        throw new ConflictException(
+          'Cannot publish a product with no variants — add at least one length/pattern option first.',
+        );
+      }
+    }
+
+    product.status = dto.status;
+    const updatedProduct = await this.productRepo.save(product);
+
+    return {
+      message: `Product status updated to ${dto.status} successfully`,
+      product: updatedProduct,
+    };
+  }
+
   async create(dto: CreateProductDto) {
     const slug = slugify(dto.name);
 
@@ -136,7 +237,7 @@ export class ProductsService {
       slug,
       description: dto.description,
       images: dto.images,
-      category: { id: dto.categoryId } as Category, 
+      category: { id: dto.categoryId } as Category,
     });
 
     return this.productRepo.save(product);
@@ -171,8 +272,19 @@ export class ProductsService {
 
     return this.productRepo.save(product);
   }
+
+  async forceUnpublish(id: string) {
+    const product = await this.findById(id);
+    product.status = ProductStatus.DRAFT;
+    return this.productRepo.save(product);
+  }
+
   async remove(id: string) {
     const product = await this.findById(id);
     await this.productRepo.remove(product);
+    return {
+      success: true,
+      message: `Product "${product.name}" deleted successfully.`,
+    };
   }
 }

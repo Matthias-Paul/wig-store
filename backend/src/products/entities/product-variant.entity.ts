@@ -8,10 +8,12 @@ import {
   VersionColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from 'typeorm';
 import { Product } from './product.entity';
 
 @Entity('product_variants')
+@Unique(['product', 'length', 'pattern']) 
 export class ProductVariant {
   @PrimaryGeneratedColumn('uuid')
   id: string;

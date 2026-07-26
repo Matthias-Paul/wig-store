@@ -87,5 +87,10 @@ export class CategoriesService {
     }
 
     await this.categoryRepo.remove(category);
+
+    return {
+      success: true,
+      message: `Category "${category.name}" deleted successfully.`,
+    };
   }
 }

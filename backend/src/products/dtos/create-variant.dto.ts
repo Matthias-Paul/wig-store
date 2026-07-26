@@ -17,11 +17,6 @@ export class CreateVariantDto {
   @IsEnum(HairPattern)
   pattern: HairPattern;
 
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(50)
-  sku: string;
-
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   price: number;
