@@ -11,19 +11,21 @@ import * as admin from 'firebase-admin';
 import { DecodedIdToken } from 'firebase-admin/auth';
 import { UsersService } from '../users/users.service';
 import authConfig from '../config/auth.config';
+import { CartsService } from 'src/carts/carts.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly cartsService: CartsService,
     @Inject(authConfig.KEY)
     private readonly authConfiguration: ConfigType<typeof authConfig>,
   ) {}
 
-  async googleAuth(idToken: string) {
+  async googleAuth(idToken: string, guestId?: string) {
     let decoded: DecodedIdToken;
-    try {
+    try {   
       decoded = await admin.auth().verifyIdToken(idToken);
     } catch {
       throw new UnauthorizedException('Invalid Google token');
@@ -51,6 +53,14 @@ export class AuthService {
         googleUID: uid,
         profileImage: picture,
       });
+    }
+
+    if (!user) {
+      throw new UnauthorizedException('Unable to resolve user account');
+    }
+
+    if (guestId) {
+      await this.cartsService.mergeGuestCartIntoUser(guestId, user.id);
     }
 
     const accessToken = this.jwtService.sign(

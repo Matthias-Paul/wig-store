@@ -11,12 +11,12 @@ export class AuthController {
 
   @AllowAnonymous()
   @Post('google')
-  public async googleAuth(
-    @Body() googleAuthDto: GoogleAuthDto,
+  async googleAuth(
+    @Body() dto: GoogleAuthDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const { user, accessToken, refreshToken } =
-      await this.authService.googleAuth(googleAuthDto.idToken);
+      await this.authService.googleAuth(dto.idToken, dto.guestId);
 
     res.cookie('access_token', accessToken, {
       httpOnly: true,

@@ -29,24 +29,31 @@ export class AuthorizeGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (isPublic) {
-      return true;
-    }
 
     const request = context.switchToHttp().getRequest<RequestWithActiveUser>();
     const token = request.cookies?.access_token as string | undefined;
 
-    if (!token) {
-      throw new UnauthorizedException('No access token provided');
+    if (token) {
+      try {
+        const payload = await this.jwtService.verifyAsync<ActiveUserType>(
+          token,
+          { secret: this.authConfiguration.secret },
+        );
+        request.user = payload;
+      } catch {
+        // Invalid/expired token — silently ignore on public routes,
+        // request.user simply stays undefined (treated as a guest)
+      }
     }
 
-    try {
-      const payload = await this.jwtService.verifyAsync<ActiveUserType>(token, {
-        secret: this.authConfiguration.secret,
-      });
-      request.user = payload;
-    } catch {
-      throw new UnauthorizedException('Invalid or expired token');
+    if (isPublic) {
+      return true; // no login required, but request.user may now be populated
+    }
+
+    if (!request.user) {
+      throw new UnauthorizedException(
+        'No access token provided or token invalid',
+      );
     }
 
     return true;
