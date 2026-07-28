@@ -9,6 +9,7 @@ async function bootstrap() {
   initFirebaseAdmin();
 
   const app = await NestFactory.create(AppModule);
+  
   app.use(cookieParser());
   app.use(helmet());
 

@@ -15,12 +15,14 @@ import { Category } from './categories/entities/category.entity';
 import { Product } from './products/entities/product.entity';
 import { ProductVariant } from './products/entities/product-variant.entity';
 import { CategoriesModule } from './categories/categories.module';
+import { UploadsModule } from './uploads/uploads.module';
+import cloudinaryConfig from './config/cloudinary.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, authConfig],
+      load: [databaseConfig, authConfig, cloudinaryConfig],
     }),
     JwtModule.register({}),
     TypeOrmModule.forRootAsync({
@@ -40,6 +42,7 @@ import { CategoriesModule } from './categories/categories.module';
     AuthModule,
     ProductsModule,
     CategoriesModule,
+    UploadsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthorizeGuard }, // runs first
