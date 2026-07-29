@@ -43,6 +43,12 @@ export class AuthController {
     };
   }
 
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    await this.authService.logout(res);
+    return { message: 'Logged out successfully' };
+  }
+  
   @Get('me')
   public async getProfile(@ActiveUser('sub') userId: string) {
     return this.authService.getProfile(userId);

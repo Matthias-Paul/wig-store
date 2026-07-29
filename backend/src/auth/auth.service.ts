@@ -12,6 +12,7 @@ import { DecodedIdToken } from 'firebase-admin/auth';
 import { UsersService } from '../users/users.service';
 import authConfig from '../config/auth.config';
 import { CartsService } from 'src/carts/carts.service';
+import type { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
 
   async googleAuth(idToken: string, guestId?: string) {
     let decoded: DecodedIdToken;
-    try {   
+    try {
       decoded = await admin.auth().verifyIdToken(idToken);
     } catch {
       throw new UnauthorizedException('Invalid Google token');
@@ -95,5 +96,18 @@ export class AuthService {
       role: user.role,
       profileImage: user.profileImage,
     };
+  }
+
+  async logout(res: Response) {
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
   }
 }
