@@ -46,6 +46,15 @@ export class Product {
   })
   variants: ProductVariant[];
 
+  @Column({ type: 'int', nullable: true })
+  discountPercentage: number | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  discountStartDate: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  discountEndDate: Date | null;
+
   @CreateDateColumn()
   createdAt: Date;
 

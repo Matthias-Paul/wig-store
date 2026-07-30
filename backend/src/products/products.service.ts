@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +14,11 @@ import { GetProductsQueryDto } from './dtos/get-products-query.dto';
 import { slugify } from '../common/utils/slugify';
 import { ProductStatus } from 'src/common/enums/product-status.enum';
 import { UpdateProductStatusDto } from './dtos/update-product-status.dto';
+import { SetDiscountDto } from './dtos/set-discount.dto';
+import {
+  isDiscountActive,
+  getDiscountedPrice,
+} from '../common/utils/discount.util';
 
 interface VariantCountRow {
   productId: string;
@@ -24,6 +30,55 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
   ) {}
+
+  private async getVariantCounts(
+    productIds: string[],
+  ): Promise<Record<string, number>> {
+    if (productIds.length === 0) {
+      return {};
+    }
+
+    const counts = await this.productRepo.manager
+      .createQueryBuilder()
+      .select('variant.product_id', 'productId')
+      .addSelect('COUNT(*)', 'count')
+      .from('product_variants', 'variant')
+      .where('variant.product_id IN (:...productIds)', { productIds })
+      .groupBy('variant.product_id')
+      .getRawMany<VariantCountRow>();
+
+    return counts.reduce((acc: Record<string, number>, row) => {
+      acc[row.productId] = parseInt(row.count, 10);
+      return acc;
+    }, {});
+  }
+
+  private async getMinPrices(
+    productIds: string[],
+  ): Promise<Record<string, number>> {
+    if (productIds.length === 0) {
+      return {};
+    }
+
+    interface MinPriceRow {
+      productId: string;
+      minPrice: string;
+    }
+
+    const rows = await this.productRepo.manager
+      .createQueryBuilder()
+      .select('variant.product_id', 'productId')
+      .addSelect('MIN(variant.price)', 'minPrice')
+      .from('product_variants', 'variant')
+      .where('variant.product_id IN (:...productIds)', { productIds })
+      .groupBy('variant.product_id')
+      .getRawMany<MinPriceRow>();
+
+    return rows.reduce((acc: Record<string, number>, row) => {
+      acc[row.productId] = Number(row.minPrice);
+      return acc;
+    }, {});
+  }
 
   async findAll(query: GetProductsQueryDto) {
     const {
@@ -44,19 +99,14 @@ export class ProductsService {
     if (search) {
       qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
     }
-
     if (categoryId) {
       qb.andWhere('category.id = :categoryId', { categoryId });
     }
-
     if (minPrice !== undefined || maxPrice !== undefined) {
       qb.andWhere(
-        `EXISTS (
-        SELECT 1 FROM product_variants pv
-        WHERE pv.product_id = product.id
+        `EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = product.id
         ${minPrice !== undefined ? 'AND pv.price >= :minPrice' : ''}
-        ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''}
-      )`,
+        ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''})`,
         { minPrice, maxPrice },
       );
     }
@@ -67,33 +117,32 @@ export class ProductsService {
       .take(limit)
       .getManyAndCount();
 
-    // Fetch variant counts for just this page of products, in one query
     const productIds = products.map((p) => p.id);
-    let variantCounts: Record<string, number> = {};
+    const variantCounts = await this.getVariantCounts(productIds);
+    const minPrices = await this.getMinPrices(productIds);
 
-    if (productIds.length > 0) {
-      const counts = await this.productRepo.manager
-        .createQueryBuilder()
-        .select('variant.product_id', 'productId')
-        .addSelect('COUNT(*)', 'count')
-        .from('product_variants', 'variant')
-        .where('variant.product_id IN (:...productIds)', { productIds })
-        .groupBy('variant.product_id')
-        .getRawMany<VariantCountRow>();
+    const productsWithDetails = products.map((product) => {
+      const startingPrice = minPrices[product.id] ?? 0;
+      const discountActive = isDiscountActive(product);
 
-      variantCounts = counts.reduce((acc: Record<string, number>, row) => {
-        acc[row.productId] = parseInt(row.count, 10);
-        return acc;
-      }, {});
-    }
-
-    const productsWithCount = products.map((product) => ({
-      ...product,
-      variantCount: variantCounts[product.id] ?? 0,
-    }));
+      return {
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        images: product.images,
+        category: product.category,
+        variantCount: variantCounts[product.id] ?? 0,
+        isOnDiscount: discountActive,
+        discountPercentage: discountActive ? product.discountPercentage : null,
+        startingPrice,
+        discountedStartingPrice: discountActive
+          ? getDiscountedPrice(startingPrice, product)
+          : startingPrice,
+      };
+    });
 
     return {
-      products: productsWithCount,
+      products: productsWithDetails,
       pagination: {
         total,
         page,
@@ -122,19 +171,14 @@ export class ProductsService {
     if (search) {
       qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
     }
-
     if (categoryId) {
       qb.andWhere('category.id = :categoryId', { categoryId });
     }
-
     if (minPrice !== undefined || maxPrice !== undefined) {
       qb.andWhere(
-        `EXISTS (
-        SELECT 1 FROM product_variants pv
-        WHERE pv.product_id = product.id
+        `EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = product.id
         ${minPrice !== undefined ? 'AND pv.price >= :minPrice' : ''}
-        ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''}
-      )`,
+        ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''})`,
         { minPrice, maxPrice },
       );
     }
@@ -145,26 +189,8 @@ export class ProductsService {
       .take(limit)
       .getManyAndCount();
 
-    // Fetch variant counts for just this page of products, in one query
     const productIds = products.map((p) => p.id);
-    let variantCounts: Record<string, number> = {};
-
-    if (productIds.length > 0) {
-      const counts = await this.productRepo.manager
-        .createQueryBuilder()
-        .select('variant.product_id', 'productId')
-        .addSelect('COUNT(*)', 'count')
-        .from('product_variants', 'variant')
-        .where('variant.product_id IN (:...productIds)', { productIds })
-        .groupBy('variant.product_id')
-        .getRawMany<VariantCountRow>();
-
-      variantCounts = counts.reduce((acc: Record<string, number>, row) => {
-        acc[row.productId] = parseInt(row.count, 10);
-        return acc;
-      }, {});
-    }
-
+    const variantCounts = await this.getVariantCounts(productIds);
     const productsWithCount = products.map((product) => ({
       ...product,
       variantCount: variantCounts[product.id] ?? 0,
@@ -181,7 +207,6 @@ export class ProductsService {
       },
     };
   }
-
   async findBySlug(slug: string) {
     const product = await this.productRepo.findOne({
       where: { slug, status: ProductStatus.PUBLISHED },
@@ -190,7 +215,20 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException('Product not found');
     }
-    return product;
+
+    const discountActive = isDiscountActive(product);
+
+    return {
+      ...product,
+      isOnDiscount: discountActive,
+      variants: product.variants.map((variant) => ({
+        ...variant,
+        originalPrice: variant.price,
+        discountedPrice: discountActive
+          ? getDiscountedPrice(Number(variant.price), product)
+          : Number(variant.price),
+      })),
+    };
   }
 
   async findById(id: string) {
@@ -286,5 +324,39 @@ export class ProductsService {
       success: true,
       message: `Product "${product.name}" deleted successfully.`,
     };
+  }
+
+  async setDiscount(id: string, dto: SetDiscountDto) {
+    const product = await this.findById(id);
+
+    const startDate = new Date(dto.startDate);
+    const endDate = new Date(dto.endDate);
+
+    if (endDate <= startDate) {
+      throw new BadRequestException('End date must be after start date');
+    }
+
+    product.discountPercentage = dto.discountPercentage;
+    product.discountStartDate = startDate;
+    product.discountEndDate = endDate;
+
+    const updatedProduct = await this.productRepo.save(product);
+
+    return {
+      message: 'Discount set successfully',
+      product: updatedProduct,
+    };
+  }
+
+  async removeDiscount(id: string) {
+    const product = await this.findById(id);
+
+    product.discountPercentage = null;
+    product.discountStartDate = null;
+    product.discountEndDate = null;
+
+    await this.productRepo.save(product);
+
+    return { message: 'Discount removed successfully' };
   }
 }

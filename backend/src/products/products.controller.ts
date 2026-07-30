@@ -16,6 +16,7 @@ import { AllowAnonymous } from '../common/decorators/allow-anonymous.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
 import { UpdateProductStatusDto } from './dtos/update-product-status.dto';
+import { SetDiscountDto } from './dtos/set-discount.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -61,5 +62,17 @@ export class ProductsController {
   @Roles(UserRole.ADMIN)
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
+  }
+
+  @Patch(':id/discount')
+  @Roles(UserRole.ADMIN)
+  setDiscount(@Param('id') id: string, @Body() dto: SetDiscountDto) {
+    return this.productsService.setDiscount(id, dto);
+  }
+
+  @Delete(':id/discount')
+  @Roles(UserRole.ADMIN)
+  removeDiscount(@Param('id') id: string) {
+    return this.productsService.removeDiscount(id);
   }
 }
