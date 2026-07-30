@@ -17,6 +17,7 @@ import { ProductVariant } from './products/entities/product-variant.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { CartsModule } from './carts/carts.module';
+import { OrdersModule } from './orders/orders.module';
 import cloudinaryConfig from './config/cloudinary.config';
 
 @Module({
@@ -45,6 +46,7 @@ import cloudinaryConfig from './config/cloudinary.config';
     CategoriesModule,
     UploadsModule,
     CartsModule,
+    OrdersModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthorizeGuard }, // runs first
