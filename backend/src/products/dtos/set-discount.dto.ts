@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, Min, Max, IsDateString } from 'class-validator';
+import { IsInt, IsNotEmpty, Min, Max, Matches } from 'class-validator';
 
 export class SetDiscountDto {
   @IsInt()
@@ -6,11 +6,15 @@ export class SetDiscountDto {
   @Max(90)
   discountPercentage: number;
 
-  @IsDateString()
   @IsNotEmpty()
+  @Matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/, {
+    message: 'startDate must be in format YYYY-MM-DDTHH:mm',
+  })
   startDate: string;
 
-  @IsDateString()
   @IsNotEmpty()
+  @Matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/, {
+    message: 'endDate must be in format YYYY-MM-DDTHH:mm',
+  })
   endDate: string;
 }

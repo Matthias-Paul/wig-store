@@ -329,8 +329,8 @@ export class ProductsService {
   async setDiscount(id: string, dto: SetDiscountDto) {
     const product = await this.findById(id);
 
-    const startDate = new Date(dto.startDate);
-    const endDate = new Date(dto.endDate);
+    const startDate = new Date(`${dto.startDate}:00+01:00`);
+    const endDate = new Date(`${dto.endDate}:00+01:00`);
 
     if (endDate <= startDate) {
       throw new BadRequestException('End date must be after start date');
