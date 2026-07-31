@@ -1,7 +1,7 @@
 import { IsUUID, IsInt, Min } from 'class-validator';
 
 export class AddToCartDto {
-  @IsUUID()
+  @IsUUID()  
   variantId: string;
 
   @IsInt()
