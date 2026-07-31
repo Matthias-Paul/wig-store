@@ -14,6 +14,7 @@ import { UpdateOrderStatusDto } from './dtos/update-order-status.dto';
 import { ActiveUser } from '../common/decorators/active-user.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
+import { OrderIdParamDto } from './dtos/get-orderId-param.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -34,11 +35,15 @@ export class OrdersController {
 
   @Get(':id')
   findOne(
-    @Param('id') id: string,
+    @Param() param: OrderIdParamDto,
     @ActiveUser('sub') userId: string,
     @ActiveUser('role') role: UserRole,
   ) {
-    return this.ordersService.findOne(id, userId, role === UserRole.ADMIN);
+    return this.ordersService.findOne(
+      param.id,
+      userId,
+      role === UserRole.ADMIN,
+    );
   }
 
   @Get()
@@ -49,7 +54,10 @@ export class OrdersController {
 
   @Patch(':id/status')
   @Roles(UserRole.ADMIN)
-  updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
-    return this.ordersService.updateStatus(id, dto);
+  updateStatus(
+    @Param() param: OrderIdParamDto,
+    @Body() dto: UpdateOrderStatusDto,
+  ) {
+    return this.ordersService.updateStatus(param.id, dto);
   }
 }

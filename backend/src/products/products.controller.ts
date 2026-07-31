@@ -17,6 +17,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
 import { UpdateProductStatusDto } from './dtos/update-product-status.dto';
 import { SetDiscountDto } from './dtos/set-discount.dto';
+import { ProductIdParamDto } from './dtos/productId-param.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -36,10 +37,13 @@ export class ProductsController {
 
   @Patch(':id/status')
   @Roles(UserRole.ADMIN)
-  updateStatus(@Param('id') id: string, @Body() dto: UpdateProductStatusDto) {
-    return this.productsService.updateStatus(id, dto);
+  updateStatus(
+    @Param() params: ProductIdParamDto,
+    @Body() dto: UpdateProductStatusDto,
+  ) {
+    return this.productsService.updateStatus(params.id, dto);
   }
-  
+
   @Get(':slug')
   @AllowAnonymous()
   findBySlug(@Param('slug') slug: string) {

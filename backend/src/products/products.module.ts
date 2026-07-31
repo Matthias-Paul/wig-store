@@ -6,9 +6,13 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { VariantsService } from './variants.service';
 import { VariantsController } from './variants.controller';
+import { CategoriesModule } from 'src/categories/categories.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, ProductVariant])],
+  imports: [
+    TypeOrmModule.forFeature([Product, ProductVariant]),
+    CategoriesModule,
+  ],
   providers: [ProductsService, VariantsService],
   controllers: [ProductsController, VariantsController],
   exports: [ProductsService, VariantsService],

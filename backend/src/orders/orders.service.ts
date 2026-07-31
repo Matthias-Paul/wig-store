@@ -242,7 +242,7 @@ export class OrdersService {
       const order = await orderRepo.findOne({
         where: { id: orderId },
         relations: { items: { variant: true } },
-      });
+      });   
 
       if (!order) {
         throw new NotFoundException('Order not found');

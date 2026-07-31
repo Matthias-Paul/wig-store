@@ -19,6 +19,7 @@ import {
   isDiscountActive,
   getDiscountedPrice,
 } from '../common/utils/discount.util';
+import { CategoriesService } from 'src/categories/categories.service';
 
 interface VariantCountRow {
   productId: string;
@@ -29,6 +30,7 @@ interface VariantCountRow {
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
+    private readonly categoryService: CategoriesService,
   ) {}
 
   private async getVariantCounts(
@@ -270,6 +272,8 @@ export class ProductsService {
       throw new ConflictException('A product with this name already exists');
     }
 
+    await this.categoryService.findById(dto.categoryId);
+
     const product = this.productRepo.create({
       name: dto.name,
       slug,
@@ -283,6 +287,10 @@ export class ProductsService {
 
   async update(id: string, dto: UpdateProductDto) {
     const product = await this.findById(id);
+
+    if (dto.categoryId) {
+      await this.categoryService.findById(dto.categoryId);
+    }
 
     if (dto.name) {
       const newSlug = slugify(dto.name);
