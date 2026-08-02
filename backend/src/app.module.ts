@@ -18,13 +18,15 @@ import { CategoriesModule } from './categories/categories.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
 import cloudinaryConfig from './config/cloudinary.config';
+import paystackConfig from './config/paystack.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, authConfig, cloudinaryConfig],
+      load: [databaseConfig, authConfig, cloudinaryConfig, paystackConfig],
     }),
     JwtModule.register({}),
     TypeOrmModule.forRootAsync({
@@ -47,6 +49,7 @@ import cloudinaryConfig from './config/cloudinary.config';
     UploadsModule,
     CartsModule,
     OrdersModule,
+    PaymentsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthorizeGuard }, // runs first

@@ -242,7 +242,7 @@ export class OrdersService {
       const order = await orderRepo.findOne({
         where: { id: orderId },
         relations: { items: { variant: true } },
-      });   
+      });
 
       if (!order) {
         throw new NotFoundException('Order not found');
@@ -289,4 +289,7 @@ export class OrdersService {
     return this.transitionStatus(orderId, OrderStatus.PAYMENT_FAILED);
   }
 
+  async updateReference(orderId: string, reference: string): Promise<void> {
+    await this.orderRepo.update(orderId, { paystackReference: reference });
+  }
 }

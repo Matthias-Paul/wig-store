@@ -4,11 +4,22 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { initFirebaseAdmin } from './firebase/firebase-admin.provider';
+import * as express from 'express';
 
 async function bootstrap() {
   initFirebaseAdmin();
 
   const app = await NestFactory.create(AppModule);
+
+  // Raw body ONLY for the Paystack webhook route — needed for signature verification
+  app.use(
+    '/api/v1/payments/webhook',
+    express.raw({ type: 'application/json' }),
+  );
+
+  
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   app.use(cookieParser());
   app.use(helmet());
