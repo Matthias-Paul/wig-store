@@ -19,15 +19,25 @@ import { UploadsModule } from './uploads/uploads.module';
 import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentsModule } from './payments/payments.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EmailModule } from './email/email.module';
 import cloudinaryConfig from './config/cloudinary.config';
 import paystackConfig from './config/paystack.config';
+import brevoConfig from './config/brevo.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, authConfig, cloudinaryConfig, paystackConfig],
+      load: [
+        databaseConfig,
+        authConfig,
+        cloudinaryConfig,
+        paystackConfig,
+        brevoConfig,
+      ],
     }),
+    EventEmitterModule.forRoot(),
     JwtModule.register({}),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -50,6 +60,7 @@ import paystackConfig from './config/paystack.config';
     CartsModule,
     OrdersModule,
     PaymentsModule,
+    EmailModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: AuthorizeGuard }, // runs first

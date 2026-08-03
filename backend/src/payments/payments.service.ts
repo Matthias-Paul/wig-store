@@ -12,6 +12,7 @@ import { PaystackService } from './paystack.service';
 import { OrdersService } from '../orders/orders.service';
 import { OrderStatus } from '../common/enums/order-status.enum';
 import { randomUUID } from 'crypto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class PaymentsService {
@@ -19,6 +20,7 @@ export class PaymentsService {
     @InjectRepository(Payment) private paymentRepo: Repository<Payment>,
     private readonly paystackService: PaystackService,
     private readonly ordersService: OrdersService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async initialize(userId: string, orderId: string) {
@@ -105,11 +107,17 @@ export class PaymentsService {
     if (verified.status === 'success') {
       existingPayment.status = PaymentStatus.SUCCESS;
       await this.paymentRepo.save(existingPayment);
-      await this.ordersService.markAsPaid(existingPayment.order.id);
+      const paidOrder = await this.ordersService.markAsPaid(
+        existingPayment.order.id,
+      );
+      this.eventEmitter.emit('order.paid', paidOrder);
     } else {
       existingPayment.status = PaymentStatus.FAILED;
       await this.paymentRepo.save(existingPayment);
-      await this.ordersService.markAsPaymentFailed(existingPayment.order.id);
+      const failedOrder = await this.ordersService.markAsPaymentFailed(
+        existingPayment.order.id,
+      );
+      this.eventEmitter.emit('order.payment_failed', failedOrder);
     }
 
     return { message: 'Webhook processed successfully' };

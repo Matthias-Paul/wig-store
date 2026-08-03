@@ -16,6 +16,7 @@ import { UpdateOrderStatusDto } from './dtos/update-order-status.dto';
 import { CartsService } from '../carts/carts.service';
 import { ProductVariant } from '../products/entities/product-variant.entity';
 import { User } from '../users/entity/user.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 const ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   [OrderStatus.PENDING_PAYMENT]: [
@@ -43,6 +44,7 @@ export class OrdersService {
   constructor(
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectDataSource() private dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
     private readonly cartsService: CartsService,
   ) {}
 
@@ -235,7 +237,7 @@ export class OrdersService {
     orderId: string,
     newStatus: OrderStatus,
   ): Promise<Order> {
-    return this.dataSource.transaction(async (manager) => {
+    const updatedOrder = await this.dataSource.transaction(async (manager) => {
       const orderRepo = manager.getRepository(Order);
       const variantRepo = manager.getRepository(ProductVariant);
 
@@ -271,8 +273,20 @@ export class OrdersService {
       order.status = newStatus;
       return orderRepo.save(order);
     });
-  }
 
+    // Only notify for stages the customer actually cares to track
+    const CUSTOMER_NOTIFIABLE_STATUSES = [
+      OrderStatus.PROCESSING,
+      OrderStatus.SHIPPED,
+      OrderStatus.DELIVERED,
+    ];
+
+    if (CUSTOMER_NOTIFIABLE_STATUSES.includes(newStatus)) {
+      this.eventEmitter.emit('order.status_updated', updatedOrder, newStatus);
+    }
+
+    return updatedOrder;
+  }
   async updateStatus(orderId: string, dto: UpdateOrderStatusDto) {
     const updatedOrder = await this.transitionStatus(orderId, dto.status);
     return {

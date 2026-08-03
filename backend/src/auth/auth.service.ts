@@ -13,6 +13,7 @@ import { UsersService } from '../users/users.service';
 import authConfig from '../config/auth.config';
 import { CartsService } from 'src/carts/carts.service';
 import type { Response } from 'express';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly cartsService: CartsService,
+    private readonly eventEmitter: EventEmitter2,
     @Inject(authConfig.KEY)
     private readonly authConfiguration: ConfigType<typeof authConfig>,
   ) {}
@@ -54,6 +56,12 @@ export class AuthService {
         googleUID: uid,
         profileImage: picture,
       });
+
+        this.eventEmitter.emit('user.registered', {
+          name: user.name,
+          email: user.email,
+        });
+
     }
 
     if (!user) {
@@ -96,8 +104,8 @@ export class AuthService {
       role: user.role,
       profileImage: user.profileImage,
     };
-  }
-
+  } 
+     
   async logout(res: Response) {
     res.clearCookie('access_token', {
       httpOnly: true,
