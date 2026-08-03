@@ -9,7 +9,7 @@ import * as express from 'express';
 async function bootstrap() {
   initFirebaseAdmin();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bodyParser: false });
 
   // Raw body ONLY for the Paystack webhook route — needed for signature verification
   app.use(
@@ -17,7 +17,7 @@ async function bootstrap() {
     express.raw({ type: 'application/json' }),
   );
 
-  
+  // Normal JSON parsing for every other route
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
