@@ -9,6 +9,7 @@ export class EmailListener {
 
   @OnEvent('order.paid')
   async handleOrderPaid(order: Order) {
+    console.log('order.paid event received for order:', order.id);
     await this.emailService.sendOrderConfirmation(order);
     await this.emailService.sendAdminNewOrderAlert(order);
   }

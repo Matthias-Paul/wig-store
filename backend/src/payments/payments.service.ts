@@ -110,6 +110,8 @@ export class PaymentsService {
       const paidOrder = await this.ordersService.markAsPaid(
         existingPayment.order.id,
       );
+      console.log('About to emit order.paid for order:', paidOrder.id);
+
       this.eventEmitter.emit('order.paid', paidOrder);
     } else {
       existingPayment.status = PaymentStatus.FAILED;
