@@ -68,11 +68,11 @@ export class EmailService {
                 <td style="padding:32px;">
                   ${innerHtml}
                 </td>
-              </tr>
+              </tr>  
               <tr>
                 <td style="background-color:#faf5fa; padding:20px 32px; text-align:center; border-top:1px solid #e5e5e5;">
                   <p style="margin:0; font-size:12px; color:#888888;">
-                    ${BRAND_NAME} &mdash; rock every hair with confidence.
+                    ${BRAND_NAME} &mdash; Rock every hair with confidence.
                   </p>
                   <p style="margin:6px 0 0 0; font-size:12px; color:#aaaaaa;">
                     If you have any questions about your order, simply reply to this email or contact our support team.

@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-
+  
 export default registerAs('brevo', () => {
   const apiKey = process.env.BREVO_API_KEY;
   const senderEmail = process.env.BREVO_SENDER_EMAIL;
@@ -12,3 +12,4 @@ export default registerAs('brevo', () => {
 
   return { apiKey, senderEmail, senderName, adminEmail };
 });
+ 

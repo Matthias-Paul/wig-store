@@ -30,6 +30,7 @@ import cloudinaryConfig from './config/cloudinary.config';
 import paystackConfig from './config/paystack.config';
 import brevoConfig from './config/brevo.config';
 import { AppController } from './app.controller'; // ← add this
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { AppController } from './app.controller'; // ← add this
     OrdersModule,
     PaymentsModule,
     EmailModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
