@@ -92,10 +92,16 @@ export class OrdersService {
         totalAmount += cartItem.variant.effectivePrice * cartItem.quantity;
       }
 
+      const seqResult: { nextval: string }[] = await manager.query(
+        `SELECT nextval('order_number_seq') as nextval`,
+      );
+      const orderNumber = `WIG-${seqResult[0].nextval.padStart(6, '0')}`;
+
       const order = orderRepo.create({
         user: { id: userId } as User,
         status: OrderStatus.PENDING_PAYMENT,
         totalAmount,
+        orderNumber,
         recipientName: dto.recipientName,
         recipientPhone: dto.recipientPhone,
         recipientEmail: dto.recipientEmail,
@@ -150,11 +156,12 @@ export class OrdersService {
 
     if (search) {
       qb.andWhere(
-        '(order.recipientName ILIKE :search OR order.paystackReference ILIKE :search)',
+        `(order.recipientName ILIKE :search 
+      OR order.paystackReference ILIKE :search
+      OR order.orderNumber ILIKE :search)`,
         { search: `%${search}%` },
       );
     }
-
     const [orders, total] = await qb
       .orderBy('order.createdAt', 'DESC')
       .skip(skip)
@@ -191,9 +198,10 @@ export class OrdersService {
     if (search) {
       qb.andWhere(
         `(order.recipientName ILIKE :search
-        OR order.recipientEmail ILIKE :search
-        OR order.recipientPhone ILIKE :search
-        OR order.paystackReference ILIKE :search)`,
+      OR order.recipientEmail ILIKE :search
+      OR order.recipientPhone ILIKE :search
+      OR order.paystackReference ILIKE :search
+      OR order.orderNumber ILIKE :search)`,
         { search: `%${search}%` },
       );
     }

@@ -34,6 +34,9 @@ export class Order {
   @Column({ nullable: true, unique: true })
   paystackReference: string;
 
+  @Column({ unique: true })
+  orderNumber: string;
+
   // --- Recipient / delivery details, snapshotted at checkout ---
   @Column()
   recipientName: string;
@@ -54,8 +57,8 @@ export class Order {
   shippingState: string;
 
   @Column({ nullable: true })
-  landmark: string; 
-  
+  landmark: string;
+
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
   items: OrderItem[];
 
