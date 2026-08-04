@@ -17,13 +17,19 @@ import { ProductVariant } from './products/entities/product-variant.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { CartsModule } from './carts/carts.module';
+import { Cart } from './carts/entities/cart.entity';
+import { CartItem } from './carts/entities/cart-item.entity';
 import { OrdersModule } from './orders/orders.module';
+import { Order } from './orders/entities/order.entity';
+import { OrderItem } from './orders/entities/order-item.entity';
 import { PaymentsModule } from './payments/payments.module';
+import { Payment } from './payments/entities/payment.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EmailModule } from './email/email.module';
 import cloudinaryConfig from './config/cloudinary.config';
 import paystackConfig from './config/paystack.config';
 import brevoConfig from './config/brevo.config';
+import { AppController } from './app.controller'; // ← add this
 
 @Module({
   imports: [
@@ -47,7 +53,17 @@ import brevoConfig from './config/brevo.config';
         autoLoadEntities: configService.get<boolean>(
           'database.autoLoadEntities',
         ),
-        entities: [User, Category, Product, ProductVariant],
+        entities: [
+          User,
+          Category,
+          Product,
+          ProductVariant,
+          Cart,
+          CartItem,
+          Order,
+          OrderItem,
+          Payment,
+        ], 
         synchronize: configService.get<boolean>('database.synchronize'),
         logging: configService.get<boolean>('database.logging'),
       }),
@@ -62,9 +78,10 @@ import brevoConfig from './config/brevo.config';
     PaymentsModule,
     EmailModule,
   ],
+  controllers: [AppController],
   providers: [
-    { provide: APP_GUARD, useClass: AuthorizeGuard }, // runs first
-    { provide: APP_GUARD, useClass: RolesGuard }, // runs second
+    { provide: APP_GUARD, useClass: AuthorizeGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
   ],
 })
 export class AppModule {}

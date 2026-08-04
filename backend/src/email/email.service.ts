@@ -56,10 +56,10 @@ export class EmailService {
                   <p style="margin:0; font-size:12px; color:#888888;">
                     ${BRAND_NAME} &mdash; Quality hair, delivered with care.
                   </p>
-                  <p style="margin:6px 0 0 0; font-size:12px; color:#aaaaaa;">
-                    This is an automated email. Please do not reply directly.
-                  </p>
-                </td>
+                <p style="margin:6px 0 0 0; font-size:12px; color:#aaaaaa;">
+                  If you have any questions about your order, simply reply to this email or contact our support team.
+                </p>
+                </td> 
               </tr>
 
             </table>
@@ -267,8 +267,8 @@ export class EmailService {
       </p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;">
         <tr>
-          <td style="font-size:13px; color:#888888;">Order Number</td>
-          <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;">${order.orderNumber}</td>
+          <td style="font-size:13px; color:#888888;">Order Number </td>
+          <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;"> ${order.orderNumber}</td>
         </tr>
         <tr>
           <td style="font-size:13px; color:#888888;">Status</td>
@@ -303,7 +303,7 @@ export class EmailService {
 
   async sendWelcomeEmail(name: string, email: string): Promise<void> {
     const content = `
-      <h2 style="color:#222222; font-size:20px; margin:0 0 8px 0;">Welcome, ${name} 👋</h2>
+      <h2 style="color:#222222; font-size:20px; margin:0 0 8px 0;">Welcome, ${name}</h2>
       <p style="color:#555555; font-size:14px; line-height:1.6; margin:0 0 16px 0;">
         Thanks for creating an account with ${BRAND_NAME}. You're all set to start browsing
         our collection — from bundles to closures, we've got something for every style.
