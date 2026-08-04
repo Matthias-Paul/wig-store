@@ -22,9 +22,33 @@ export class EmailService {
   }
 
   /**
-   * Wraps any inner content in the branded email shell — logo header,
-   * bordered card, footer. Every outgoing email goes through this.
+   * Sends an email with one automatic retry on failure — protects against
+   * transient network blips without adding a full queue/durability layer.
    */
+  private async sendWithRetry(
+    params: Parameters<
+      BrevoClient['transactionalEmails']['sendTransacEmail']
+    >[0],
+    context: string,
+  ): Promise<void> {
+    try {
+      await this.client.transactionalEmails.sendTransacEmail(params);
+      return;
+    } catch (firstError) {
+      this.logger.warn(`First attempt failed for ${context}, retrying once...`);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log(firstError);
+      try {
+        await this.client.transactionalEmails.sendTransacEmail(params);
+      } catch (secondError) {
+        this.logger.error(
+          `Failed to send email after retry — ${context}`,
+          secondError,
+        );
+      }
+    }
+  }
+
   private wrapTemplate(innerHtml: string): string {
     return `
     <!DOCTYPE html>
@@ -34,34 +58,27 @@ export class EmailService {
         <tr>
           <td align="center">
             <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #e5e5e5; border-radius:8px; overflow:hidden;">
-              
-              <!-- Header -->
               <tr>
                 <td style="background-color:${BRAND_COLOR}; padding:24px 32px; text-align:center;">
                   <img src="${LOGO_URL}" alt="${BRAND_NAME}" width="60" height="60" style="border-radius:50%; display:block; margin:0 auto 8px auto;" />
                   <span style="color:#ffffff; font-size:20px; font-weight:bold; letter-spacing:0.5px;">${BRAND_NAME}</span>
                 </td>
               </tr>
-
-              <!-- Body -->
               <tr>
                 <td style="padding:32px;">
                   ${innerHtml}
                 </td>
               </tr>
-
-              <!-- Footer -->
               <tr>
                 <td style="background-color:#faf5fa; padding:20px 32px; text-align:center; border-top:1px solid #e5e5e5;">
                   <p style="margin:0; font-size:12px; color:#888888;">
                     ${BRAND_NAME} &mdash; rock every hair with confidence.
                   </p>
-                <p style="margin:6px 0 0 0; font-size:12px; color:#aaaaaa;">
-                  If you have any questions about your order, simply reply to this email or contact our support team.
-                </p>
-                </td> 
+                  <p style="margin:6px 0 0 0; font-size:12px; color:#aaaaaa;">
+                    If you have any questions about your order, simply reply to this email or contact our support team.
+                  </p>
+                </td>
               </tr>
-
             </table>
           </td>
         </tr>
@@ -104,20 +121,17 @@ export class EmailService {
 
   async sendOrderConfirmation(order: Order): Promise<void> {
     const content = `
-      <h2 style="color:#222222; font-size:20px; margin:0 0 8px 0;">Thanks for your order, ${order.recipientName}</h2>
+      <h2 style="color:#222222; font-size:20px; margin:0 0 6px 0;">Thanks for your order, ${order.recipientName}</h2>
       <p style="color:#555555; font-size:14px; line-height:1.6; margin:0 0 16px 0;">
         We've received your order and it's being processed. Here's a summary:
       </p>
-
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
         <tr>
-          <td style="font-size:13px; color:#888888;">Order Number</td>
-          <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;">${order.orderNumber}</td>
+          <td style="font-size:13px; color:#888888;">Order Number </td>
+          <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;"> ${order.orderNumber}</td>
         </tr>
       </table>
-
       ${this.buildItemsTable(order)}
-
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
         <tr>
           <td style="font-size:15px; color:#222222; font-weight:bold; text-align:right;">
@@ -125,7 +139,6 @@ export class EmailService {
           </td>
         </tr>
       </table>
-
       <div style="margin-top:24px; padding:16px; background-color:#faf5fa; border-radius:6px;">
         <p style="margin:0 0 4px 0; font-size:13px; color:${BRAND_COLOR}; font-weight:bold;">Delivery Address</p>
         <p style="margin:0; font-size:14px; color:#333333; line-height:1.5;">
@@ -133,14 +146,13 @@ export class EmailService {
           ${order.landmark ? `<br/>Landmark: ${order.landmark}` : ''}
         </p>
       </div>
-
       <p style="color:#555555; font-size:14px; line-height:1.6; margin-top:24px;">
         You can track this order anytime using your order number above. We'll send you an update as soon as it ships.
       </p>
     `;
 
-    try {
-      await this.client.transactionalEmails.sendTransacEmail({
+    await this.sendWithRetry(
+      {
         subject: `Order Confirmed — ${order.orderNumber}`,
         htmlContent: this.wrapTemplate(content),
         sender: {
@@ -148,18 +160,14 @@ export class EmailService {
           name: this.config.senderName,
         },
         to: [{ email: order.recipientEmail, name: order.recipientName }],
-      });
-    } catch (error) {
-      this.logger.error(
-        `Failed to send order confirmation for order ${order.orderNumber}`,
-        error,
-      );
-    }
+      },
+      `order confirmation for ${order.orderNumber}`,
+    );
   }
 
   async sendPaymentFailedNotice(order: Order): Promise<void> {
     const content = `
-      <h2 style="color:#222222; font-size:20px; margin:0 0 8px 0;">We couldn't process your payment</h2>
+      <h2 style="color:#222222; font-size:20px; margin:0 0 6px 0;">We couldn't process your payment</h2>
       <p style="color:#555555; font-size:14px; line-height:1.6; margin:0 0 16px 0;">
         Hi ${order.recipientName}, your payment for order <strong>${order.orderNumber}</strong> didn't go through.
         Your items are still reserved for a short while, so you can retry from your order history whenever you're ready.
@@ -175,8 +183,8 @@ export class EmailService {
       </table>
     `;
 
-    try {
-      await this.client.transactionalEmails.sendTransacEmail({
+    await this.sendWithRetry(
+      {
         subject: `Payment issue with your order — ${order.orderNumber}`,
         htmlContent: this.wrapTemplate(content),
         sender: {
@@ -184,13 +192,9 @@ export class EmailService {
           name: this.config.senderName,
         },
         to: [{ email: order.recipientEmail, name: order.recipientName }],
-      });
-    } catch (error) {
-      this.logger.error(
-        `Failed to send payment-failed notice for order ${order.orderNumber}`,
-        error,
-      );
-    }
+      },
+      `payment-failed notice for ${order.orderNumber}`,
+    );
   }
 
   async sendAdminNewOrderAlert(order: Order): Promise<void> {
@@ -202,17 +206,14 @@ export class EmailService {
     }
 
     const content = `
-      <h2 style="color:#222222; font-size:20px; margin:0 0 8px 0;">New order received 🎉</h2>
-
+      <h2 style="color:#222222; font-size:20px; margin:0 0 6px 0;">New order received 🎉</h2>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
         <tr><td style="font-size:13px; color:#888888; padding:2px 0;">Order Number</td><td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;">${order.orderNumber}</td></tr>
         <tr><td style="font-size:13px; color:#888888; padding:2px 0;">Customer</td><td style="font-size:13px; color:#222222; text-align:right;">${order.recipientName}</td></tr>
         <tr><td style="font-size:13px; color:#888888; padding:2px 0;">Phone</td><td style="font-size:13px; color:#222222; text-align:right;">${order.recipientPhone}</td></tr>
         <tr><td style="font-size:13px; color:#888888; padding:2px 0;">Email</td><td style="font-size:13px; color:#222222; text-align:right;">${order.recipientEmail}</td></tr>
       </table>
-
       ${this.buildItemsTable(order)}
-
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
         <tr>
           <td style="font-size:15px; color:#222222; font-weight:bold; text-align:right;">
@@ -220,7 +221,6 @@ export class EmailService {
           </td>
         </tr>
       </table>
-
       <div style="margin-top:24px; padding:16px; background-color:#faf5fa; border-radius:6px;">
         <p style="margin:0 0 4px 0; font-size:13px; color:${BRAND_COLOR}; font-weight:bold;">Ship To</p>
         <p style="margin:0; font-size:14px; color:#333333; line-height:1.5;">
@@ -230,8 +230,8 @@ export class EmailService {
       </div>
     `;
 
-    try {
-      await this.client.transactionalEmails.sendTransacEmail({
+    await this.sendWithRetry(
+      {
         subject: `New Order Received — ${order.orderNumber}`,
         htmlContent: this.wrapTemplate(content),
         sender: {
@@ -239,13 +239,9 @@ export class EmailService {
           name: this.config.senderName,
         },
         to: [{ email: adminEmail }],
-      });
-    } catch (error) {
-      this.logger.error(
-        `Failed to send admin order alert for order ${order.orderNumber}`,
-        error,
-      );
-    }
+      },
+      `admin order alert for ${order.orderNumber}`,
+    );
   }
 
   async sendOrderStatusUpdate(order: Order, status: string): Promise<void> {
@@ -261,7 +257,7 @@ export class EmailService {
       `Your order status has been updated to ${status}.`;
 
     const content = `
-      <h2 style="color:#222222; font-size:20px; margin:0 0 8px 0;">Order Update</h2>
+      <h2 style="color:#222222; font-size:20px; margin:0 0 6px 0;">Order Update</h2>
       <p style="color:#555555; font-size:14px; line-height:1.6; margin:0 0 16px 0;">
         Hi ${order.recipientName}, ${message}
       </p>
@@ -283,8 +279,8 @@ export class EmailService {
       </div>
     `;
 
-    try {
-      await this.client.transactionalEmails.sendTransacEmail({
+    await this.sendWithRetry(
+      {
         subject: `Order Update — ${status.charAt(0).toUpperCase() + status.slice(1)}`,
         htmlContent: this.wrapTemplate(content),
         sender: {
@@ -292,21 +288,17 @@ export class EmailService {
           name: this.config.senderName,
         },
         to: [{ email: order.recipientEmail, name: order.recipientName }],
-      });
-    } catch (error) {
-      this.logger.error(
-        `Failed to send status update email for order ${order.orderNumber}`,
-        error,
-      );
-    }
+      },
+      `status update (${status}) for ${order.orderNumber}`,
+    );
   }
 
   async sendWelcomeEmail(name: string, email: string): Promise<void> {
     const content = `
-      <h2 style="color:#222222; font-size:20px; margin:0 0 8px 0;">Welcome, ${name}</h2>
+      <h2 style="color:#222222; font-size:20px; margin:0 0 6px 0;">Welcome, ${name} </h2>
       <p style="color:#555555; font-size:14px; line-height:1.6; margin:0 0 16px 0;">
         Thanks for creating an account with ${BRAND_NAME}. You're all set to start browsing
-        our collection — From bundles to wigs, we have got something for every style. From kits to accessories, we have got something for every need..
+        our collection — From bundles to wigs, we’ve got something for every style. From kits to accessories, we’ve got something for every need..
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:12px;">
         <tr>
@@ -319,8 +311,8 @@ export class EmailService {
       </table>
     `;
 
-    try {
-      await this.client.transactionalEmails.sendTransacEmail({
+    await this.sendWithRetry(
+      {
         subject: `Welcome to ${BRAND_NAME}, ${name}`,
         htmlContent: this.wrapTemplate(content),
         sender: {
@@ -328,9 +320,8 @@ export class EmailService {
           name: this.config.senderName,
         },
         to: [{ email, name }],
-      });
-    } catch (error) {
-      this.logger.error(`Failed to send welcome email to ${email}`, error);
-    }
+      },
+      `welcome email to ${email}`,
+    );
   }
 }

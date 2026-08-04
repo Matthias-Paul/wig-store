@@ -251,7 +251,7 @@ export class OrdersService {
 
       const order = await orderRepo.findOne({
         where: { id: orderId },
-        relations: { items: { variant: true } },
+        relations: { items: { variant: { product: true } } },
       });
 
       if (!order) {
