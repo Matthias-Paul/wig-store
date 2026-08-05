@@ -12,4 +12,12 @@ export class AdminController {
   getStats() {
     return this.adminService.getStats();
   }
+
+  @Get('recent-activity')
+  getRecentActivity() {
+    return this.adminService.getRecentActivity();
+  }
+
+
 }
+  
