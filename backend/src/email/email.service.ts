@@ -7,7 +7,7 @@ import { Order } from '../orders/entities/order.entity';
 const BRAND_COLOR = '#7E297E';
 const LOGO_URL =
   'https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg';
-const BRAND_NAME = 'Rockshairmpire';
+const BRAND_NAME = 'Rocks Hairmpire';
 
 @Injectable()
 export class EmailService {

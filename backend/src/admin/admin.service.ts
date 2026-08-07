@@ -6,7 +6,8 @@ import { OrderStatus } from '../common/enums/order-status.enum';
 import { Product } from '../products/entities/product.entity';
 import { ProductVariant } from '../products/entities/product-variant.entity';
 import { User } from '../users/entity/user.entity';
-
+import { Payment } from 'src/payments/entities/payment.entity';
+import { GetTransactionsQueryDto } from './dto/get-transactions-query.dto';
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -39,6 +40,7 @@ export class AdminService {
     @InjectRepository(ProductVariant)
     private variantRepo: Repository<ProductVariant>,
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Payment) private paymentRepo: Repository<Payment>,
   ) {}
 
   async getStats() {
@@ -121,5 +123,118 @@ export class AdminService {
     return { activities: combined };
   }
 
+  async getRevenueChart(groupBy: 'day' | 'month' = 'day', days = 30) {
+    const dateFormat = groupBy === 'day' ? 'YYYY-MM-DD' : 'YYYY-MM';
 
+    const rows = await this.orderRepo
+      .createQueryBuilder('order')
+      .select(`TO_CHAR(order.createdAt, '${dateFormat}')`, 'period')
+      .addSelect('SUM(order.totalAmount)', 'revenue')
+      .addSelect('COUNT(*)', 'orderCount')
+      .where('order.status NOT IN (:...excluded)', {
+        excluded: EXCLUDED_FROM_REVENUE,
+      })
+      .andWhere(`order.createdAt >= NOW() - INTERVAL '${days} days'`)
+      .groupBy('period')
+      .orderBy('period', 'ASC')
+      .getRawMany<{ period: string; revenue: string; orderCount: string }>();
+
+    return {
+      chart: rows.map((row) => ({
+        period: row.period,
+        revenue: Number(row.revenue),
+        orderCount: parseInt(row.orderCount, 10),
+      })),
+    };
+  }
+
+  async getOrdersByStatus() {
+    const rows = await this.orderRepo
+      .createQueryBuilder('order')
+      .select('order.status', 'status')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('order.status')
+      .getRawMany<{ status: OrderStatus; count: string }>();
+
+    // Ensure every status appears in the response, even with zero orders,
+    // so the frontend chart doesn't have to handle missing categories
+    const countsByStatus = rows.reduce(
+      (acc, row) => {
+        acc[row.status] = parseInt(row.count, 10);
+        return acc;
+      },
+      {} as Record<OrderStatus, number>,
+    );
+
+    const breakdown = Object.values(OrderStatus).map((status) => ({
+      status,
+      count: countsByStatus[status] ?? 0,
+    }));
+
+    return { breakdown };
+  }
+
+  async getTransactions(query: GetTransactionsQueryDto) {
+    const { status, search, page = 1, limit = 10 } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.paymentRepo
+      .createQueryBuilder('payment')
+      .leftJoinAndSelect('payment.order', 'order')
+      .select([
+        'payment.id',
+        'payment.reference',
+        'payment.status',
+        'payment.amount',
+        'payment.createdAt',
+        'order.id',
+        'order.orderNumber',
+        'order.recipientName',
+        'order.recipientEmail',
+      ]);
+
+    if (status) {
+      qb.andWhere('payment.status = :status', { status });
+    }
+
+    if (search) {
+      qb.andWhere(
+        `(payment.reference ILIKE :search 
+        OR order.orderNumber ILIKE :search 
+        OR order.recipientName ILIKE :search)`,
+        { search: `%${search}%` },
+      );
+    }  
+
+    const [payments, total] = await qb
+      .orderBy('payment.createdAt', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    const transactions = payments.map((payment) => ({
+      id: payment.id,
+      reference: payment.reference,
+      status: payment.status,
+      amount: Number(payment.amount),
+      date: payment.createdAt,
+      order: {
+        id: payment.order.id,
+        orderNumber: payment.order.orderNumber,
+        recipientName: payment.order.recipientName,
+        recipientEmail: payment.order.recipientEmail,
+      },
+    }));
+
+    return {
+      transactions,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page * limit < total,
+      },
+    };
+  }
 }

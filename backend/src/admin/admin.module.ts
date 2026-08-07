@@ -6,9 +6,12 @@ import { ProductVariant } from '../products/entities/product-variant.entity';
 import { User } from '../users/entity/user.entity';
 import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
+import { Payment } from 'src/payments/entities/payment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, Product, ProductVariant, User])],
+  imports: [
+    TypeOrmModule.forFeature([Order, Product, ProductVariant, User, Payment]),
+  ],
   providers: [AdminService],
   controllers: [AdminController],
 })
