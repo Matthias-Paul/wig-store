@@ -5,6 +5,6 @@ export default registerAs('database', () => ({
   autoLoadEntities:
     process.env.DB_AUTO_LOAD === 'true' ||
     process.env.DB_AUTO_LOAD === undefined,
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: process.env.DB_SYNCHRONIZE === 'true',
   logging: process.env.NODE_ENV === 'development',
 }));

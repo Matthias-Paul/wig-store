@@ -31,6 +31,9 @@ export class User {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
   role: UserRole;
 
+  @Column({ nullable: true })
+  testMigrationField: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

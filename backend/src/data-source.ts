@@ -8,6 +8,9 @@ import { Cart } from './carts/entities/cart.entity';
 import { CartItem } from './carts/entities/cart-item.entity';
 import { Order } from './orders/entities/order.entity';
 import { OrderItem } from './orders/entities/order-item.entity';
+import { Payment } from './payments/entities/payment.entity';
+import { Notification } from './notifications/entities/notification.entity';
+import { DeviceToken } from './notifications/entities/device-token.entity';
 
 dotenv.config();
 
@@ -23,7 +26,10 @@ export const AppDataSource = new DataSource({
     CartItem,
     Order,
     OrderItem,
+    Payment,
+    Notification,
+    DeviceToken,
   ],
   migrations: ['src/migrations/*.ts'],
-  synchronize: false, // migrations handle schema, always
+  synchronize: false,
 });
