@@ -31,6 +31,7 @@ import paystackConfig from './config/paystack.config';
 import brevoConfig from './config/brevo.config';
 import { AppController } from './app.controller'; // ← add this
 import { AdminModule } from './admin/admin.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { AdminModule } from './admin/admin.module';
     PaymentsModule,
     EmailModule,
     AdminModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [

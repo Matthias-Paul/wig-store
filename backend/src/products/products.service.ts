@@ -20,6 +20,7 @@ import {
   getDiscountedPrice,
 } from '../common/utils/discount.util';
 import { CategoriesService } from 'src/categories/categories.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 interface VariantCountRow {
   productId: string;
@@ -31,6 +32,7 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product) private productRepo: Repository<Product>,
     private readonly categoryService: CategoriesService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private async getVariantCounts(
@@ -257,6 +259,8 @@ export class ProductsService {
 
     product.status = dto.status;
     const updatedProduct = await this.productRepo.save(product);
+
+    this.eventEmitter.emit('product.updated', updatedProduct);
 
     return {
       message: `Product status updated to ${dto.status} successfully`,

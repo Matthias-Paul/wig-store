@@ -132,6 +132,8 @@ export class OrdersService {
       where: { id: savedOrderId },
       relations: { items: { variant: { product: true } } },
     });
+    
+    this.eventEmitter.emit('order.placed', completeOrder);
 
     return {
       message: 'Order created successfully. Proceed to payment.',

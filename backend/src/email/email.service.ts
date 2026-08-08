@@ -127,7 +127,7 @@ export class EmailService {
       </p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
         <tr>
-          <td style="font-size:13px; color:#888888;">Order Number </td>
+          <td style="font-size:13px; color:#888888;">Order No </td>
           <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;"> ${order.orderNumber}</td>
         </tr>
       </table>
@@ -263,7 +263,7 @@ export class EmailService {
       </p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;">
         <tr>
-          <td style="font-size:13px; color:#888888;">Order Number </td>
+          <td style="font-size:13px; color:#888888;">Order No </td>
           <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;"> ${order.orderNumber}</td>
         </tr>
         <tr>
