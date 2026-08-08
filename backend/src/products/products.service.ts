@@ -260,14 +260,15 @@ export class ProductsService {
     product.status = dto.status;
     const updatedProduct = await this.productRepo.save(product);
 
-    this.eventEmitter.emit('product.updated', updatedProduct);
+    if (dto.status === ProductStatus.PUBLISHED) {
+      this.eventEmitter.emit('product.created', updatedProduct);
+    }
 
     return {
       message: `Product status updated to ${dto.status} successfully`,
       product: updatedProduct,
     };
   }
-
   async create(dto: CreateProductDto) {
     const slug = slugify(dto.name);
 

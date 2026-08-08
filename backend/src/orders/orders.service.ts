@@ -130,9 +130,9 @@ export class OrdersService {
 
     const completeOrder = await this.orderRepo.findOne({
       where: { id: savedOrderId },
-      relations: { items: { variant: { product: true } } },
+      relations: { items: { variant: { product: true } }, user: true }, 
     });
-    
+
     this.eventEmitter.emit('order.placed', completeOrder);
 
     return {
@@ -253,7 +253,7 @@ export class OrdersService {
 
       const order = await orderRepo.findOne({
         where: { id: orderId },
-        relations: { items: { variant: { product: true } } },
+        relations: { items: { variant: { product: true } }, user: true },
       });
 
       if (!order) {

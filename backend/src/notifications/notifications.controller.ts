@@ -25,7 +25,7 @@ export class NotificationsController {
   ) {
     return this.notificationsService.findMyNotifications(userId, query);
   }
-
+ 
   @Get()
   @Roles(UserRole.ADMIN)
   findAllForAdmin(@Query() query: GetNotificationsQueryDto) {
