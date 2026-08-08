@@ -125,12 +125,12 @@ export class EmailService {
       <p style="color:#555555; font-size:14px; line-height:1.6; margin:0 0 16px 0;">
         We've received your order and it's being processed. Here's a summary:
       </p>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
-        <tr>
-          <td style="font-size:13px; color:#888888;">Order No </td>
-          <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;"> ${order.orderNumber}</td>
-        </tr>
-      </table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+      <tr>
+        <td style="font-size:13px; color:#888888; padding:4px 8px 4px 0;">Order Number</td>
+        <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold; padding:4px 0 4px 8px;">${order.orderNumber}</td>
+      </tr>
+    </table>
       ${this.buildItemsTable(order)}
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
         <tr>
@@ -261,16 +261,16 @@ export class EmailService {
       <p style="color:#555555; font-size:14px; line-height:1.6; margin:0 0 16px 0;">
         Hi ${order.recipientName}, ${message}
       </p>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;">
-        <tr>
-          <td style="font-size:13px; color:#888888;">Order No </td>
-          <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold;"> ${order.orderNumber}</td>
-        </tr>
-        <tr>
-          <td style="font-size:13px; color:#888888;">Status</td>
-          <td style="font-size:13px; color:${BRAND_COLOR}; text-align:right; font-weight:bold; text-transform:capitalize;">${status}</td>
-        </tr>
-      </table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;">
+      <tr>
+        <td style="font-size:13px; color:#888888; padding:4px 8px 4px 0;">Order Number</td>
+        <td style="font-size:13px; color:#222222; text-align:right; font-weight:bold; padding:4px 0 4px 8px;">${order.orderNumber}</td>
+      </tr>
+      <tr>
+        <td style="font-size:13px; color:#888888; padding:4px 8px 4px 0;">Status</td>
+        <td style="font-size:13px; color:${BRAND_COLOR}; text-align:right; font-weight:bold; text-transform:capitalize; padding:4px 0 4px 8px;">${status}</td>
+      </tr>
+    </table>
       <div style="margin-top:16px; padding:16px; background-color:#faf5fa; border-radius:6px;">
         <p style="margin:0 0 4px 0; font-size:13px; color:${BRAND_COLOR}; font-weight:bold;">Delivery Address</p>
         <p style="margin:0; font-size:14px; color:#333333; line-height:1.5;">
