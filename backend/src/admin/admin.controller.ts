@@ -28,7 +28,7 @@ export class AdminController {
   @Get('charts/orders-by-status')
   getOrdersByStatus() {
     return this.adminService.getOrdersByStatus();
-  }
+  }  
 
   @Get('transactions')
   getTransactions(@Query() query: GetTransactionsQueryDto) {

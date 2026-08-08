@@ -12,19 +12,20 @@ export class FcmService {
   ): Promise<void> {
     if (tokens.length === 0) return;
 
-    try {
-      const response = await admin.messaging().sendMulticast({
-        tokens,
-        notification: { title, body },
-      });
+    const results = await Promise.allSettled(
+      tokens.map((token) =>
+        admin.messaging().send({
+          token,
+          notification: { title, body },
+        }),
+      ),
+    );
 
-      if (response.failureCount > 0) {
-        this.logger.warn(
-          `${response.failureCount} push notification(s) failed to deliver`,
-        );
-      }
-    } catch (error) {
-      this.logger.error('Failed to send push notification', error);
+    const failures = results.filter((r) => r.status === 'rejected');
+    if (failures.length > 0) {
+      this.logger.warn(
+        `${failures.length} push notification(s) failed to deliver`,
+      );
     }
-  }  
+  }
 }
