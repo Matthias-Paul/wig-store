@@ -57,11 +57,10 @@ export class AuthService {
         profileImage: picture,
       });
 
-        this.eventEmitter.emit('user.registered', {
-          name: user.name,
-          email: user.email,
-        });
-
+      this.eventEmitter.emit('user.registered', {
+        name: user.name,
+        email: user.email,
+      });
     }
 
     if (!user) {
@@ -104,8 +103,34 @@ export class AuthService {
       role: user.role,
       profileImage: user.profileImage,
     };
-  } 
-     
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    let payload: { sub: string };
+    try {
+      payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.authConfiguration.refreshSecret,
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+
+    const user = await this.usersService.findById(payload.sub);
+    if (!user) {
+      throw new UnauthorizedException('User no longer exists');
+    }
+
+    const accessToken = this.jwtService.sign(
+      { sub: user.id, role: user.role },
+      {
+        secret: this.authConfiguration.secret,
+        expiresIn: this.authConfiguration.accessExpiresIn,
+      },
+    );
+
+    return { accessToken };
+  }
+
   async logout(res: Response) {
     res.clearCookie('access_token', {
       httpOnly: true,

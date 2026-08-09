@@ -1,5 +1,13 @@
-import { Controller, Post, Body, Res, Get } from '@nestjs/common';
-import type { Response } from 'express';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Get,
+  UnauthorizedException,
+  Req,
+} from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { AllowAnonymous } from 'src/common/decorators/allow-anonymous.decorator';
@@ -48,7 +56,32 @@ export class AuthController {
     await this.authService.logout(res);
     return { message: 'Logged out successfully' };
   }
-  
+
+  @Post('refresh')
+  @AllowAnonymous()
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const refreshToken = req.cookies?.refresh_token as string | undefined;
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
+
+    const { accessToken } =
+      await this.authService.refreshAccessToken(refreshToken);
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000,
+    });
+
+    return { message: 'Token refreshed' };
+  }
+
   @Get('me')
   public async getProfile(@ActiveUser('sub') userId: string) {
     return this.authService.getProfile(userId);

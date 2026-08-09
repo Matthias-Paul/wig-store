@@ -17,7 +17,7 @@ export function Button({
   return (
     <button
       className={clsx(
-        "rounded-md font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
+        "rounded-md font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
         {
           "bg-brand text-white hover:bg-brand-dark": variant === "primary",
           "bg-gold text-white hover:opacity-90": variant === "gold",
