@@ -27,10 +27,15 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   app.enableCors({
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      'http://localhost:3000',
+      'https://rocks-hairmpire.vercel.app',
+      'https://www.rocks-hairmpire.com',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
-  });
-
+  }); 
+  
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

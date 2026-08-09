@@ -7,13 +7,14 @@ import { Card } from "@/src/components/ui/Card";
 import { DateTimePicker } from "@/src/components/ui/DatePicker";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { Input } from "@/src/components/ui/Input";
-import { Modal } from "@/src/components/ui/Modal";
+// import { Modal } from "@/src/components/ui/Modal";
 import { SearchInput } from "@/src/components/ui/SearchInput";
 import { Select } from "@/src/components/ui/Select";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { Spinner } from "@/src/components/ui/Spinner";
 import { Textarea } from "@/src/components/ui/Textarea";
 import Image from "next/image";
+import {AuthStatus} from "@/src/features/auth/AuthTest"
 
 export default function Home() {
   return (
@@ -85,6 +86,8 @@ export default function Home() {
         description="Try adjusting your search or filter to find what you're looking for."
         action={<Button variant="primary">Browse Products</Button>}
       />
+
+      <AuthStatus />
     </div>
   );
 }
