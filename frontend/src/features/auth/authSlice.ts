@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { apiFetch } from '@/lib/apiClient';
+import { apiFetch } from '@/src/lib/apiClient';
 
 interface User {
   id: string;

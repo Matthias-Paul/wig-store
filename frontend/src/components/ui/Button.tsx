@@ -5,11 +5,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "gold" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
   children: ReactNode;
+  icon?: ReactNode;
+  iconPosition?: "left" | "right";
 }
 
 export function Button({
   variant = "primary",
   size = "md",
+  icon,
+  iconPosition = "left",
   className,
   children,
   ...props
@@ -17,7 +21,7 @@ export function Button({
   return (
     <button
       className={clsx(
-        "rounded-md font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
+        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
         {
           "bg-brand text-white hover:bg-brand-dark": variant === "primary",
           "bg-gold text-white hover:opacity-90": variant === "gold",
@@ -34,7 +38,9 @@ export function Button({
       )}
       {...props}
     >
+      {icon && iconPosition === "left" && icon}
       {children}
+      {icon && iconPosition === "right" && icon}
     </button>
   );
 }

@@ -1,8 +1,11 @@
-'use client';
+"use client";
 
+import { useSession } from "@/src/features/auth/hooks/useSession";
+import { useGoogleSignIn } from "@/src/features/auth/hooks/useGoogleSignIn";
+import { useLogout } from "@/src/features/auth/hooks/useLogout";
+import { Button } from "@/src/components/ui/Button";
 import { Avatar } from "@/src/components/ui/Avatar";
 import { Badge } from "@/src/components/ui/Badge";
-import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
 import { DateTimePicker } from "@/src/components/ui/DatePicker";
 import { EmptyState } from "@/src/components/ui/EmptyState";
@@ -14,9 +17,16 @@ import { Skeleton } from "@/src/components/ui/Skeleton";
 import { Spinner } from "@/src/components/ui/Spinner";
 import { Textarea } from "@/src/components/ui/Textarea";
 import Image from "next/image";
-import {AuthStatus} from "@/src/features/auth/AuthTest"
+import { ProductGrid } from "@/src/features/products/components/ProductGrid";
+import { GoogleIcon } from "@/src/components/ui/icons/GoogleIcon";
 
 export default function Home() {
+  const { user, isAuthenticated, isLoading } = useSession();
+  const signIn = useGoogleSignIn();
+  const logout = useLogout();
+
+  if (isLoading) return <Spinner size="sm" />;
+
   return (
     <div className="flex pb-100 flex-col space-y-10 flex-1 items-center bg-white justify-center">
       <h1 className="font-heading text-4xl text-brand">
@@ -86,8 +96,30 @@ export default function Home() {
         description="Try adjusting your search or filter to find what you're looking for."
         action={<Button variant="primary">Browse Products</Button>}
       />
+      {!isAuthenticated && (
+        <Button
+          variant="outline"
+          icon={<GoogleIcon />}
+          onClick={() => signIn.mutate()}
+          disabled={signIn.isPending}
+        >
+          {signIn.isPending ? "Signing in..." : "Sign in with Google"}
+        </Button>
+      )}
 
-      <AuthStatus />
+      {isAuthenticated && (
+        <>
+          <div className="flex items-center gap-2">
+            <Avatar src={user!.profileImage} name={user!.name} size="sm" />
+            <Button variant="outline" onClick={() => logout.mutate()}>
+              Log out
+            </Button>
+          </div>
+          ;
+        </>
+      )}
+
+      <ProductGrid filters={{ minPrice: 1000, maxPrice: 50000 }} />
     </div>
   );
 }
