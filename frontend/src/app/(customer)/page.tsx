@@ -19,6 +19,7 @@ import { Textarea } from "@/src/components/ui/Textarea";
 import Image from "next/image";
 import { ProductGrid } from "@/src/features/products/components/ProductGrid";
 import { GoogleIcon } from "@/src/components/ui/icons/GoogleIcon";
+import { ProductGridSkeleton } from "@/src/features/products/components/ProductGridSkeleton";
 
 export default function Home() {
   const { user, isAuthenticated, isLoading } = useSession();
@@ -120,6 +121,8 @@ export default function Home() {
       )}
 
       <ProductGrid filters={{ minPrice: 1000, maxPrice: 50000 }} />
+      <ProductGridSkeleton count={8} />
+      
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { auth, googleProvider } from '@/src/lib/firebase';
 import { getGuestId, clearGuestId } from '@/src/lib/guestId';
 import { apiFetch } from '@/src/lib/apiClient';
 import { useDispatch } from 'react-redux';
-import { setUser } from './authSlice';
 import { Button } from '@/src/components/ui/Button';
 
 export function GoogleSignInButton() {
@@ -25,7 +24,6 @@ export function GoogleSignInButton() {
       if (!res.ok) throw new Error('Sign-in failed');
 
       const data = await res.json();
-      dispatch(setUser(data.user));
       clearGuestId(); // cart is now tied to the account, guest identity no longer needed
     } catch (error) {
       console.error('Google sign-in failed', error);

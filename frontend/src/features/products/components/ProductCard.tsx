@@ -4,20 +4,23 @@ import { Card } from "@/src/components/ui/Card";
 import { Badge } from "@/src/components/ui/Badge";
 import { Button } from "@/src/components/ui/Button";
 import type { Product } from "@/src/types/product";
+import { parseProductImages } from "@/src/lib/parseProductImages";
 
 export function ProductCard({ product }: { product: Product }) {
   const hasStock = (product.variantCount ?? 0) > 0;
 
-  console.log("product", product);
+ const productImages = parseProductImages(product.images);
+ const productImage = productImages[0] 
+
   return (
     <Card padding="none" className="overflow-hidden">
       <Link href={`/products/${product.slug}`}>
         <Image
-        //   src={product.images[0]}
-          src="https://lh3.googleusercontent.com/a/ACg8ocICEfEwvsfIv2GGlw-k0fOoQgF4IX6WAHI9WvEUMg-8wkY5F1uK=s96-c"
+          src={productImage} 
           alt={product.name}
           width={500}
           height={300}
+          unoptimized
           className="w-full h-90 md:h-65 object-cover "
         />
       </Link>
