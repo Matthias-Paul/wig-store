@@ -1,21 +1,32 @@
 import {
-  IsEnum,
   IsInt,
   IsNumber,
-  IsNotEmpty,
   IsString,
+  IsNotEmpty,
+  IsOptional,
   Min,
   MaxLength,
 } from 'class-validator';
-import { HairPattern } from 'src/common/enums/hair-pattern.enum';
 
 export class CreateVariantDto {
   @IsInt()
   @Min(1)
   length: number;
 
-  @IsEnum(HairPattern)
-  pattern: HairPattern;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  color: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  laceType?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  closureSize?: string;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)

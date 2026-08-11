@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +12,8 @@ import { UpdateVariantDto } from './dtos/update-variant.dto';
 import { ProductsService } from './products.service';
 import { generateSku } from 'src/common/utils/generate-sku';
 import { ProductStatus } from 'src/common/enums/product-status.enum';
+
+const CATEGORIES_REQUIRING_LACE_TYPE = ['luxury-hairs', 'hair-bundles']; // by slug
 
 @Injectable()
 export class VariantsService {
@@ -23,33 +26,49 @@ export class VariantsService {
   async create(productId: string, dto: CreateVariantDto) {
     const product = await this.productsService.findById(productId);
 
+    const categoryRequiresLaceType = CATEGORIES_REQUIRING_LACE_TYPE.includes(
+      product.category.slug,
+    );
+
+    if (categoryRequiresLaceType && !dto.laceType) {
+      throw new BadRequestException(
+        `Lace type is required for products in the "${product.category.name}" category.`,
+      );
+    }
+
     const existingVariant = await this.variantRepo.findOne({
       where: {
         product: { id: productId },
         length: dto.length,
-        pattern: dto.pattern,
+        color: dto.color,
+        closureSize: dto.closureSize,
       },
     });
 
     if (existingVariant) {
       throw new ConflictException(
-        `This product already has a ${dto.length}-inch ${dto.pattern} variant.`,
+        `This product already has a ${dto.length}-inch, ${dto.color}${dto.closureSize ? `, ${dto.closureSize}` : ''} variant.`,
       );
     }
 
-    let sku = generateSku(product.name, dto.length, dto.pattern);
+    let sku = generateSku(product.name, dto.length, dto.color);
+
     let existingSku = await this.variantRepo.findOne({ where: { sku } });
     let attempt = 1;
 
     while (existingSku) {
-      sku = `${generateSku(product.name, dto.length, dto.pattern)}-${attempt}`;
+      sku = `${generateSku(product.name, dto.length, dto.color)}-${attempt}`;
       existingSku = await this.variantRepo.findOne({ where: { sku } });
       attempt++;
     }
 
-    const variant = this.variantRepo.create({ ...dto, sku, product });
-    const savedVariant = await this.variantRepo.save(variant);
+    const variant = this.variantRepo.create({
+      ...dto,
+      sku,
+      product,
+    });
 
+    const savedVariant = await this.variantRepo.save(variant);
     const updatedProduct = await this.productsService.findById(productId);
 
     return {
@@ -57,7 +76,9 @@ export class VariantsService {
       variant: {
         id: savedVariant.id,
         length: savedVariant.length,
-        pattern: savedVariant.pattern,
+        color: savedVariant.color,
+        laceType: savedVariant.laceType,
+        closureSize: savedVariant.closureSize,
         sku: savedVariant.sku,
         price: savedVariant.price,
         stock: savedVariant.stock,
@@ -101,34 +122,50 @@ export class VariantsService {
     const variant = await this.findOne(productId, variantId);
     const product = await this.productsService.findById(productId);
 
+    const categoryRequiresLaceType = CATEGORIES_REQUIRING_LACE_TYPE.includes(
+      product.category.slug,
+    );
+
+    const newLaceType =
+      dto.laceType !== undefined ? dto.laceType : variant.laceType;
+
+    if (categoryRequiresLaceType && !newLaceType) {
+      throw new BadRequestException(
+        `Lace type is required for products in the "${product.category.name}" category.`,
+      );
+    }
+
     const lengthChanged =
       dto.length !== undefined && dto.length !== variant.length;
-    const patternChanged =
-      dto.pattern !== undefined && dto.pattern !== variant.pattern;
+    const colorChanged = dto.color !== undefined && dto.color !== variant.color;
+    const closureSizeChanged =
+      dto.closureSize !== undefined && dto.closureSize !== variant.closureSize;
 
-    if (lengthChanged || patternChanged) {
+    if (lengthChanged || colorChanged || closureSizeChanged) {
       const newLength = dto.length ?? variant.length;
-      const newPattern = dto.pattern ?? variant.pattern;
+      const newColor = dto.color ?? variant.color;
+      const newClosureSize = dto.closureSize ?? variant.closureSize;
 
       const duplicate = await this.variantRepo.findOne({
         where: {
           product: { id: productId },
           length: newLength,
-          pattern: newPattern,
+          color: newColor,
+          closureSize: newClosureSize,
         },
       });
 
       if (duplicate && duplicate.id !== variant.id) {
         throw new ConflictException(
-          `This product already has a ${newLength}-inch ${newPattern} variant.`,
+          `This product already has a ${newLength}-inch, ${newColor}${newClosureSize ? `, ${newClosureSize}` : ''} variant.`,
         );
       }
     }
 
     Object.assign(variant, dto);
 
-    if (lengthChanged || patternChanged) {
-      let newSku = generateSku(product.name, variant.length, variant.pattern);
+    if (lengthChanged || colorChanged) {
+      let newSku = generateSku(product.name, variant.length, variant.color);
 
       let existingSku = await this.variantRepo.findOne({
         where: { sku: newSku },
@@ -136,7 +173,7 @@ export class VariantsService {
       let attempt = 1;
 
       while (existingSku && existingSku.id !== variant.id) {
-        newSku = `${generateSku(product.name, variant.length, variant.pattern)}-${attempt}`;
+        newSku = `${generateSku(product.name, variant.length, variant.color)}-${attempt}`;
         existingSku = await this.variantRepo.findOne({
           where: { sku: newSku },
         });
@@ -154,7 +191,9 @@ export class VariantsService {
       variant: {
         id: updatedVariant.id,
         length: updatedVariant.length,
-        pattern: updatedVariant.pattern,
+        color: updatedVariant.color,
+        laceType: updatedVariant.laceType,
+        closureSize: updatedVariant.closureSize,
         sku: updatedVariant.sku,
         price: updatedVariant.price,
         stock: updatedVariant.stock,

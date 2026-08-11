@@ -11,7 +11,10 @@ import { ProductVariant } from '../products/entities/product-variant.entity';
 import { AddToCartDto } from './dtos/add-to-cart.dto';
 import { UpdateCartItemDto } from './dtos/update-cart-item.dto';
 import { CartsIdentity } from './decorators/cart-identity.decorator';
-import { isDiscountActive, getDiscountedPrice } from '../common/utils/discount.util';
+import {
+  isDiscountActive,
+  getDiscountedPrice,
+} from '../common/utils/discount.util';
 
 @Injectable()
 export class CartsService {
@@ -206,33 +209,41 @@ export class CartsService {
     await this.cartRepo.remove(guestCart);
   }
 
+  private buildCartResponse(cart: Cart) {
+    const items = cart.items.map((item) => {
+      const product = item.variant.product;
+      const discountActive = isDiscountActive(product);
+      const effectivePrice = discountActive
+        ? getDiscountedPrice(Number(item.variant.price), product)
+        : Number(item.variant.price);
 
-private buildCartResponse(cart: Cart) {
-  const items = cart.items.map((item) => {
-    const product = item.variant.product;
-    const discountActive = isDiscountActive(product);
-    const effectivePrice = discountActive
-      ? getDiscountedPrice(Number(item.variant.price), product)
-      : Number(item.variant.price);
+      return {
+        id: item.id,
+        quantity: item.quantity,
+        variant: {
+          id: item.variant.id,
+          length: item.variant.length,
+          color: item.variant.color,
+          laceType: item.variant.laceType,
+          closureSize: item.variant.closureSize,
+          sku: item.variant.sku,
+          price: item.variant.price,
+          originalPrice: item.variant.price,
+          effectivePrice,
+          stock: item.variant.stock,
+          product: {
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            images: product.images,
+          },
+        },
+        subtotal: effectivePrice * item.quantity,
+      };
+    });
 
-    return {
-      id: item.id,
-      quantity: item.quantity,
-      variant: {
-        id: item.variant.id,
-        length: item.variant.length,
-        pattern: item.variant.pattern,
-        originalPrice: item.variant.price,
-        effectivePrice,
-        stock: item.variant.stock,
-        product: { id: product.id, name: product.name, slug: product.slug, images: product.images },
-      },
-      subtotal: effectivePrice * item.quantity,
-    };
-  });
+    const total = items.reduce((sum, item) => sum + item.subtotal, 0);
 
-  const total = items.reduce((sum, item) => sum + item.subtotal, 0);
-
-  return { id: cart.id, items, total };
-}
+    return { id: cart.id, items, total };
+  }
 }

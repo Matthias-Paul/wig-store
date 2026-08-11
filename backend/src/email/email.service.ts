@@ -95,7 +95,7 @@ export class EmailService {
         <tr>
           <td style="padding:10px 8px; border-bottom:1px solid #eeeeee; font-size:14px; color:#333333;">
             ${item.variant.product.name}<br/>
-            <span style="font-size:12px; color:#888888;">${item.variant.length}-inch, ${item.variant.pattern}</span>
+            <span style="font-size:12px; color:#888888;">${item.variant.length}-inch, ${item.variant.color}, ${item.variant.closureSize}</span>
           </td>
           <td style="padding:10px 8px; border-bottom:1px solid #eeeeee; font-size:14px; color:#333333; text-align:center;">
             ${item.quantity}

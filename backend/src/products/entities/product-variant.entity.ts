@@ -1,4 +1,3 @@
-import { HairPattern } from './../../common/enums/hair-pattern.enum';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -13,7 +12,7 @@ import {
 import { Product } from './product.entity';
 
 @Entity('product_variants')
-@Unique(['product', 'length', 'pattern']) 
+@Unique(['product', 'length', 'color', 'closureSize'])
 export class ProductVariant {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -28,8 +27,14 @@ export class ProductVariant {
   @Column({ type: 'int' })
   length: number; // in inches
 
-  @Column({ type: 'enum', enum: HairPattern })
-  pattern: HairPattern;
+  @Column()
+  color: string;
+
+  @Column({ nullable: true })
+  laceType: string;
+
+  @Column({ nullable: true })
+  closureSize: string;
 
   @Column({ unique: true })
   sku: string;

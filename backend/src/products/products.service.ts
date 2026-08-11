@@ -252,7 +252,7 @@ export class ProductsService {
     if (dto.status === ProductStatus.PUBLISHED) {
       if (!product.variants || product.variants.length === 0) {
         throw new ConflictException(
-          'Cannot publish a product with no variants — add at least one length/pattern option first.',
+          'Cannot publish a product with no variants — add at least one variant option first.',
         );
       }
     }
