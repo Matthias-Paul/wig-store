@@ -1,7 +1,10 @@
 export interface CartItemVariant {
   id: string;
   length: number;
-  pattern: string;
+  color: string;
+  laceType?: string | null;
+  closureSize?: string | null;
+  sku: string;
   originalPrice: number;
   effectivePrice: number;
   stock: number;

@@ -27,3 +27,25 @@ export async function addToCart(
   }
   return res.json();
 }
+
+export async function updateCartItem(itemId: string, quantity: number): Promise<{ cart: Cart }> {
+  const res = await apiFetch(`/cart/items/${itemId}`, {
+    method: 'PATCH',
+    headers: cartHeaders(),
+    body: JSON.stringify({ quantity }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || 'Failed to update item');
+  }
+  return res.json();
+}
+
+export async function removeCartItem(itemId: string): Promise<{ cart: Cart }> {
+  const res = await apiFetch(`/cart/items/${itemId}`, {
+    method: 'DELETE',
+    headers: cartHeaders(),
+  });
+  if (!res.ok) throw new Error('Failed to remove item');
+  return res.json();
+}

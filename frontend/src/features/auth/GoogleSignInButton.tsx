@@ -4,11 +4,9 @@ import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '@/src/lib/firebase';
 import { getGuestId, clearGuestId } from '@/src/lib/guestId';
 import { apiFetch } from '@/src/lib/apiClient';
-import { useDispatch } from 'react-redux';
 import { Button } from '@/src/components/ui/Button';
 
 export function GoogleSignInButton() {
-  const dispatch = useDispatch();
 
   async function handleSignIn() {
     try {

@@ -1,8 +1,11 @@
 
+
 export interface ProductVariant {
   id: string;
   length: number;
-  pattern: "straight" | "curly" | "wavy" | "kinky";
+  color: string;
+  laceType?: string | null;
+  closureSize?: string | null;
   sku: string;
   price: number;
   stock: number;

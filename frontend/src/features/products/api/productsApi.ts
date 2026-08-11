@@ -16,6 +16,7 @@ export async function getProducts(
 
   const res = await apiFetch(`/products?${query.toString()}`);
   if (!res.ok) throw new Error("Failed to load products");
+  console.log("getProducts response:", res);
   return res.json();
 }
 

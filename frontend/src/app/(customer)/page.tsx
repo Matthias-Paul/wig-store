@@ -29,7 +29,7 @@ export default function Home() {
   if (isLoading) return <Spinner size="sm" />;
 
   return (
-    <div className="flex pb-100 flex-col space-y-10 flex-1 items-center bg-white justify-center">
+    <div className="flex flex-col space-y-10 flex-1 items-center bg-white justify-center">
       <h1 className="font-heading text-4xl text-brand">
         Welcome to Rockshairmpire
       </h1>
@@ -120,7 +120,7 @@ export default function Home() {
         </>
       )}
 
-      <ProductGrid filters={{ minPrice: 1000, maxPrice: 50000 }} />
+      <ProductGrid filters={{  }} />
       <ProductGridSkeleton count={8} />
       
     </div>

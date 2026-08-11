@@ -8,7 +8,6 @@ import type { ProductQueryParams } from "@/src/types/product";
 
 export function ProductGrid({ filters }: { filters: ProductQueryParams }) {
   const { data, isLoading, isError } = useProducts(filters);
-
   if (isLoading) return <ProductGridSkeleton count={4} />;
 
   if (isError) {
