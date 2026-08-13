@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/src/lib/apiClient';
+import { toast } from 'sonner';
 
 export function useLogout() {
   const queryClient = useQueryClient();
@@ -13,6 +14,9 @@ export function useLogout() {
     onSuccess: () => {
       queryClient.setQueryData(['session'], null);
       queryClient.clear(); // wipe everything cached — cart, orders, notifications, all tied to the now-logged-out user
+      toast.info("Logged out successfully");
+      window.location.href = "/";
+
     },
   });
 }
