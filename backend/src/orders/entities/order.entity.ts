@@ -37,6 +37,13 @@ export class Order {
   @Column({ unique: true })
   orderNumber: string;
 
+  @Column('decimal', {
+    precision: 10,
+    scale: 2,
+    default: 0,
+  })
+  deliveryFee: number;
+
   // --- Recipient / delivery details, snapshotted at checkout ---
   @Column()
   recipientName: string;

@@ -1,21 +1,24 @@
 // app/(customer)/checkout/page.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   checkoutSchema,
   type CheckoutFormValues,
 } from "@/src/features/orders/schemas/checkoutSchema";
 import { useCheckout } from "@/src/features/orders/hooks/useCheckout";
+import { useDeliveryFee } from "@/src/features/orders/hooks/useDeliveryFee";
 import { useCart } from "@/src/features/cart/hooks/useCart";
 import { useSession } from "@/src/features/auth/hooks/useSession";
 import { Input } from "@/src/components/ui/Input";
+import { Select } from "@/src/components/ui/Select";
 import { Button } from "@/src/components/ui/Button";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { EmptyState } from "@/src/components/ui/EmptyState";
+import { NIGERIAN_STATES } from "@/src/lib/nigerianStates";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -26,6 +29,7 @@ export default function CheckoutPage() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -35,7 +39,14 @@ export default function CheckoutPage() {
     },
   });
 
-  // Guard: must be logged in to reach checkout at all
+  const selectedState = useWatch({ control, name: "shippingState" });
+  const {
+    data: deliveryFee,
+    isLoading: feeLoading,
+    isError: feeError,
+    error: feeErrorObj,
+  } = useDeliveryFee(selectedState);
+
   useEffect(() => {
     if (!sessionLoading && !isAuthenticated) {
       router.replace("/login?redirect=/checkout");
@@ -43,9 +54,10 @@ export default function CheckoutPage() {
   }, [sessionLoading, isAuthenticated, router]);
 
   function onSubmit(values: CheckoutFormValues) {
+    if (!deliveryFee) return; // safety guard — shouldn't happen since button is disabled without it
     checkoutMutation.mutate(values, {
       onSuccess: ({ authorizationUrl }) => {
-        window.location.href = authorizationUrl; // redirect to Paystack's hosted page
+        window.location.href = authorizationUrl;
       },
     });
   }
@@ -73,18 +85,14 @@ export default function CheckoutPage() {
     );
   }
 
+  const subtotal = cart.total;
+  const orderTotal = deliveryFee
+    ? subtotal + Number(deliveryFee.fee)
+    : subtotal;
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="font-heading text-2xl mb-6">Checkout</h1>
-
-      <div className="bg-brand-tint rounded-lg p-4 mb-6">
-        <p className="text-sm text-gray-700">
-          {cart.items.length} item{cart.items.length > 1 ? "s" : ""} · Total:{" "}
-          <span className="font-semibold text-brand">
-            ₦{cart.total.toLocaleString()}
-          </span>
-        </p>
-      </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input
@@ -117,10 +125,17 @@ export default function CheckoutPage() {
             {...register("shippingCity")}
             error={errors.shippingCity?.message}
           />
-          <Input
+          <Select
             label="State"
             {...register("shippingState")}
             error={errors.shippingState?.message}
+            options={[
+              { label: "Select state", value: "" },
+              ...NIGERIAN_STATES.map((state) => ({
+                label: state,
+                value: state,
+              })),
+            ]}
           />
         </div>
 
@@ -131,6 +146,32 @@ export default function CheckoutPage() {
           error={errors.landmark?.message}
         />
 
+        {/* Order summary — updates live as state is selected */}
+        <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+          <div className="flex justify-between text-gray-600">
+            <span>Subtotal</span>
+            <span>₦{subtotal.toLocaleString()}</span>
+          </div>
+
+          <div className="flex justify-between text-gray-600">
+            <span>Delivery Fee</span>
+            {!selectedState ? (
+              <span className="text-gray-400">Select a state</span>
+            ) : feeLoading ? (
+              <span className="text-gray-400">Calculating...</span>
+            ) : feeError ? (
+              <span className="text-error text-xs">{feeErrorObj?.message}</span>
+            ) : (
+              <span>₦{Number(deliveryFee!.fee).toLocaleString()}</span>
+            )}
+          </div>
+
+          <div className="flex justify-between font-semibold text-base border-t border-gray-200 pt-2 mt-2">
+            <span>Total</span>
+            <span className="text-brand">₦{orderTotal.toLocaleString()}</span>
+          </div>
+        </div>
+
         {checkoutMutation.isError && (
           <p className="text-error text-sm">{checkoutMutation.error.message}</p>
         )}
@@ -139,11 +180,13 @@ export default function CheckoutPage() {
           type="submit"
           variant="primary"
           className="w-full"
-          disabled={checkoutMutation.isPending}
+          disabled={checkoutMutation.isPending || !deliveryFee || feeLoading}
         >
           {checkoutMutation.isPending
             ? "Processing..."
-            : `Continue to Payment · ₦${cart.total.toLocaleString()}`}
+            : !selectedState
+              ? "Select a state to continue"
+              : `Continue to Payment · ₦${orderTotal.toLocaleString()}`}
         </Button>
       </form>
     </div>

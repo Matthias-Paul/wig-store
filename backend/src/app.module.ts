@@ -32,6 +32,7 @@ import brevoConfig from './config/brevo.config';
 import { AppController } from './app.controller'; // ← add this
 import { AdminModule } from './admin/admin.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { DeliveryFeeModule } from './delivery-fee/delivery-fee.module';
 
 @Module({
   imports: [
@@ -81,6 +82,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     EmailModule,
     AdminModule,
     NotificationsModule,
+    DeliveryFeeModule,
   ],
   controllers: [AppController],
   providers: [

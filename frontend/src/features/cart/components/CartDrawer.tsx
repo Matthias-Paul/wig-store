@@ -52,11 +52,11 @@ export function CartDrawer() {
 
       <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col animate-slide-in">
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="font-heading text-lg">Your Cart</h2>
+          <h2 className="font-heading text-brand font-semibold text-lg">Your Cart</h2>
           <button
             onClick={close}
             aria-label="Close cart"
-            className="text-gray-400 hover:text-gray-600"
+            className="text-brand cursor-pointer hover:text-gray-600"
           >
             <X size={22} />
           </button>
@@ -73,6 +73,14 @@ export function CartDrawer() {
               icon={<ShoppingBag size={40} />}
               title="Your cart is empty"
               description="Add something you love."
+              action={
+                <Button
+                  variant="primary"
+                  onClick={() => router.push("/products")}
+                >
+                  Browse Products
+                </Button>
+              }
             />
           ) : (
             cart.items.map((item) => <CartItemRow key={item.id} item={item} />)

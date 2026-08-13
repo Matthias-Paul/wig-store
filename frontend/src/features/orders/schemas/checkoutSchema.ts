@@ -1,4 +1,6 @@
+// features/orders/schemas/checkoutSchema.ts
 import { z } from "zod";
+import { NIGERIAN_STATES } from "@/src/lib/nigerianStates";
 
 export const checkoutSchema = z.object({
   recipientName: z.string().min(1, "Name is required").max(100),
@@ -8,7 +10,9 @@ export const checkoutSchema = z.object({
   recipientEmail: z.string().email("Enter a valid email address"),
   shippingAddress: z.string().min(1, "Address is required"),
   shippingCity: z.string().min(1, "City is required"),
-  shippingState: z.string().min(1, "State is required"),
+  shippingState: z.enum(NIGERIAN_STATES, {
+    error: "Please select a state",
+  }),
   landmark: z.string().optional(),
 });
 

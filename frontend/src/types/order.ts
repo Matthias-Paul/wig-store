@@ -23,6 +23,7 @@ export interface Order {
   totalAmount: number;
   recipientName: string;
   recipientPhone: string;
+  deliveryFee: number;
   recipientEmail: string;
   shippingAddress: string;
   shippingCity: string;

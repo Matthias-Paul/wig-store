@@ -6,6 +6,7 @@ import { useUpdateCartItem } from "../hooks/useUpdateCartItem";
 import { useRemoveCartItem } from "../hooks/useRemoveCartItem";
 import { parseProductImages } from "@/src/lib/parseProductImages";
 import type { CartItem } from "@/src/types/cart";
+import { Spinner } from "@/src/components/ui/Spinner";
 
 export function CartItemRow({ item }: { item: CartItem }) {
   const updateItem = useUpdateCartItem();
@@ -22,7 +23,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
 
   return (
     <div className="flex gap-3 py-4 border-b border-gray-100">
-      <div className="relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+      <div className="relative w-25 h-25 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
         <Image
           src={images[0]}
           alt={item.variant.product.name}
@@ -32,7 +33,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm truncate">
+        <p className="font-medium text-brand text-sm truncate">
           {item.variant.product.name}
         </p>
         <p className="text-xs text-gray-500">
@@ -54,7 +55,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
           <div className="flex items-center border border-gray-300 rounded-md">
             <button
               onClick={() => handleQuantityChange(item.quantity - 1)}
-              className="px-2 py-1 text-gray-600 text-sm"
+              className="px-2 cursor-pointer py-1 text-gray-600 text-sm"
               aria-label="Decrease quantity"
             >
               −
@@ -63,7 +64,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
             <button
               onClick={() => handleQuantityChange(item.quantity + 1)}
               disabled={item.quantity >= item.variant.stock}
-              className="px-2 py-1 text-gray-600 text-sm disabled:opacity-30"
+              className="px-2 cursor-pointer py-1 text-gray-600 text-sm disabled:opacity-30"
               aria-label="Increase quantity"
             >
               +
@@ -73,9 +74,14 @@ export function CartItemRow({ item }: { item: CartItem }) {
           <button
             onClick={() => removeItem.mutate(item.id)}
             aria-label="Remove item"
-            className="text-gray-400 hover:text-error"
+            disabled={removeItem.isPending}
+            className="text-gray-400 hover:text-error disabled:opacity-50"
           >
-            <Trash2 size={16} />
+            {removeItem.isPending ? (
+              <Spinner size="sm" />
+            ) : (
+              <Trash2 className="cursor-pointer" size={16} />
+            )}
           </button>
         </div>
       </div>

@@ -17,6 +17,7 @@ import { CartsService } from '../carts/carts.service';
 import { ProductVariant } from '../products/entities/product-variant.entity';
 import { User } from '../users/entity/user.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DeliveryFeesService } from 'src/delivery-fee/delivery-fee.service';
 
 const ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   [OrderStatus.PENDING_PAYMENT]: [
@@ -46,6 +47,7 @@ export class OrdersService {
     @InjectDataSource() private dataSource: DataSource,
     private readonly eventEmitter: EventEmitter2,
     private readonly cartsService: CartsService,
+    private readonly deliveryFeesService: DeliveryFeesService,
   ) {}
 
   async checkout(userId: string, dto: CreateOrderDto) {
@@ -54,6 +56,12 @@ export class OrdersService {
     if (!cart.items || cart.items.length === 0) {
       throw new BadRequestException('Your cart is empty');
     }
+    // Look up delivery fee BEFORE the transaction — fail fast if the state is invalid,
+    // no point decrementing stock for an order that can't be created anyway
+    const deliveryFeeRecord = await this.deliveryFeesService.getFeeForState(
+      dto.shippingState,
+    );
+    const deliveryFee = Number(deliveryFeeRecord.fee);
 
     const savedOrderId = await this.dataSource.transaction(async (manager) => {
       const variantRepo = manager.getRepository(ProductVariant);
@@ -100,7 +108,8 @@ export class OrdersService {
       const order = orderRepo.create({
         user: { id: userId } as User,
         status: OrderStatus.PENDING_PAYMENT,
-        totalAmount,
+        totalAmount: totalAmount + deliveryFee, 
+        deliveryFee,
         orderNumber,
         recipientName: dto.recipientName,
         recipientPhone: dto.recipientPhone,
@@ -130,7 +139,7 @@ export class OrdersService {
 
     const completeOrder = await this.orderRepo.findOne({
       where: { id: savedOrderId },
-      relations: { items: { variant: { product: true } }, user: true }, 
+      relations: { items: { variant: { product: true } }, user: true },
     });
 
     this.eventEmitter.emit('order.placed', completeOrder);

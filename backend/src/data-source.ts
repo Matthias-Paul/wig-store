@@ -11,6 +11,7 @@ import { OrderItem } from './orders/entities/order-item.entity';
 import { Payment } from './payments/entities/payment.entity';
 import { Notification } from './notifications/entities/notification.entity';
 import { DeviceToken } from './notifications/entities/device-token.entity';
+import { DeliveryFee } from './delivery-fee/entities/delivery-fee.entity';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ export const AppDataSource = new DataSource({
     Payment,
     Notification,
     DeviceToken,
+    DeliveryFee
   ],
   migrations: ['src/migrations/*.ts'],
   synchronize: false,

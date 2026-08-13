@@ -30,7 +30,7 @@ export function Hero() {
               <Sparkles size={12} />
             </span>
             <span className="text-xs font-semibold text-brand tracking-wide">
-              Premium 100% Human Hair
+              Worldwide Shipping
             </span>
           </div>
 
@@ -99,7 +99,7 @@ export function Hero() {
                 ))}
               </div>
               <p className="text-xs text-gray-500 mt-0.5">
-                Trusted by 500+ happy customers
+                Trusted by 100+ happy customers
               </p>
             </div>
           </div>
@@ -129,7 +129,7 @@ export function Hero() {
             </span>
             <div>
               <p className="text-sm font-semibold text-gray-900">
-                100% Human Hair
+                Worldwide Shipping
               </p>
               <p className="text-xs text-gray-500">Certified Quality</p>
             </div>
@@ -137,7 +137,7 @@ export function Hero() {
 
           {/* Floating stat card */}
           <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl px-5 py-4 border border-gray-100">
-            <p className="font-heading text-2xl text-brand">500+</p>
+            <p className="font-heading text-2xl text-brand">100+</p>
             <p className="text-xs text-gray-500">Happy Customers</p>
           </div>
         </div>
