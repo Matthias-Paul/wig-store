@@ -1,10 +1,10 @@
 'use client';
 
 import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '@/src/lib/firebase';
 import { getGuestId, clearGuestId } from '@/src/lib/guestId';
 import { apiFetch } from '@/src/lib/apiClient';
 import { Button } from '@/src/components/ui/Button';
+import { auth, googleProvider } from '@/src/lib/googleAuthFirebase';
 
 export function GoogleSignInButton() {
 

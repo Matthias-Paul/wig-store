@@ -49,7 +49,7 @@ export function MobileMenu({
           <div className="flex items-center gap-3 p-4 border-b border-gray-100">
             <Avatar src={user.profileImage} name={user.name} size="sm" />
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate">{user.name}</p>
+              <p className="text-sm font-medium text-gray-500 truncate">{user.name}</p>
               <p className="text-xs text-gray-500 truncate">{user.email}</p>
             </div>
           </div>

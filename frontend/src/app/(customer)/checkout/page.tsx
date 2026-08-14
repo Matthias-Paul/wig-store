@@ -103,7 +103,6 @@ export default function CheckoutPage() {
         <Input
           label="Phone Number"
           type="tel"
-          placeholder="+2348012345678"
           {...register("recipientPhone")}
           error={errors.recipientPhone?.message}
         />
@@ -166,9 +165,9 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          <div className="flex justify-between font-semibold text-base border-t border-gray-200 pt-2 mt-2">
+          <div className="flex text-brand justify-between font-semibold text-base border-t border-gray-200 pt-2 mt-2">
             <span>Total</span>
-            <span className="text-brand">₦{orderTotal.toLocaleString()}</span>
+            <span>₦{orderTotal.toLocaleString()}</span>
           </div>
         </div>
 

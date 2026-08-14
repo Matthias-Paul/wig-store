@@ -23,7 +23,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
 
   return (
     <div className="flex gap-3 py-4 border-b border-gray-100">
-      <div className="relative w-25 h-25 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+      <div className="relative w-25 h-25 shrink-0 rounded-md overflow-hidden bg-gray-100">
         <Image
           src={images[0]}
           alt={item.variant.product.name}
@@ -60,7 +60,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
             >
               −
             </button>
-            <span className="px-3 text-sm">{item.quantity}</span>
+            <span className="px-3 text-brand text-sm">{item.quantity}</span>
             <button
               onClick={() => handleQuantityChange(item.quantity + 1)}
               disabled={item.quantity >= item.variant.stock}
@@ -87,7 +87,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
       </div>
 
       <div className="text-right">
-        <p className="font-semibold text-sm">
+        <p className="font-semibold text-brand text-sm">
           ₦{item.subtotal.toLocaleString()}
         </p>
       </div>

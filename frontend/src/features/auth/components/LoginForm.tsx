@@ -29,6 +29,9 @@ export default function LoginPage() {
     });
   }
 
+const LOGO_URL =
+  "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg";
+
   return (
     <div className="min-h-screen grid md:grid-cols-2">
       {/* Left — sign-in card */}
@@ -36,7 +39,13 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           <div className="flex justify-center mb-6">
             <div className="h-14 w-14 rounded-full bg-brand-tint flex items-center justify-center">
-              <Sparkles className="text-brand" size={26} />
+              <Image
+                src={LOGO_URL}
+                alt="Rockshairmpire"
+                width={50}
+                height={50}
+                className="rounded-full"
+              />{" "}
             </div>
           </div>
 

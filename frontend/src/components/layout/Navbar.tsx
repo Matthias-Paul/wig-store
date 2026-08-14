@@ -30,12 +30,12 @@ export function Navbar() {
       <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           {/* Left — logo + brand */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
             <Image
               src={LOGO_URL}
               alt="Rockshairmpire"
-              width={32}
-              height={32}
+              width={50}
+              height={50}
               className="rounded-full"
             />
             <span className="font-heading text-lg text-brand hidden sm:inline">

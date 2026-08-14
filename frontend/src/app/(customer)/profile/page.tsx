@@ -49,7 +49,7 @@ export default function ProfilePage() {
 
       {/* Name, email, role */}
       <div className="text-center mt-3">
-        <h1 className="font-heading text-2xl text-gray-900">{user.name}</h1>
+        <h1 className="font-heading text-2xl text-gray-500">{user.name}</h1>
         <p className="text-gray-500 text-sm mt-0.5">{user.email}</p>
         <div className="mt-2.5">
           <Badge variant={isAdmin ? "gold" : "brand"}>

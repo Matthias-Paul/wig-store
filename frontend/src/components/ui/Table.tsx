@@ -27,7 +27,7 @@ export function TableRow({
   className?: string;
 }) {
   return (
-    <tr className={clsx("hover:bg-gray-50 transition-colors", className)}>
+    <tr className={clsx("hover:bg-gray-700 cursor-pointer transition-colors", className)}>
       {children}
     </tr>
   );

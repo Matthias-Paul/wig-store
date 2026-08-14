@@ -1,17 +1,18 @@
 import { FeaturedCategories } from "@/src/features/categories/components/FeaturedCategories";
+import { FeaturedProducts } from "@/src/features/home/components/FeaturedProducts";
+import { FinalCTA } from "@/src/features/home/components/FinalCTA";
 import { Hero } from "@/src/features/home/components/Hero";
-import { ProductGrid } from "@/src/features/products/components/ProductGrid";
+import { Testimonials } from "@/src/features/home/components/Testimonials";
 
 export default function HomePage() {
   return (
     <div>
       <Hero />
       <FeaturedCategories />
+      <FeaturedProducts />
+      <Testimonials />
+      <FinalCTA />
 
-      <div className="px-4" >
-        <ProductGrid filters={{}} />
-      </div>
-      {/* more sections coming: featured categories, featured products, etc. */}
     </div>
   );
 }

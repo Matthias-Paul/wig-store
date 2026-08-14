@@ -63,16 +63,18 @@ export default function OrdersPage() {
   return (
     <div className="max-w-5xl mx-auto p-4 pb-16">
       <div className="flex items-center justify-between mb-1">
-        <h1 className="font-heading text-2xl text-gray-900">My Orders</h1>
+        <h1 className="font-heading text-2xl text-brand dark:text-white ">
+          My Orders
+        </h1>
         {data && (
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-brand dark:text-white ">
             {data.pagination.total} order
             {data.pagination.total !== 1 ? "s" : ""}
           </span>
         )}
       </div>
-      <p className="text-gray-500 text-sm mb-6">
-        Track and manage everything you've ordered.
+      <p className=" text-sm mb-6">
+        Track and manage everything you have ordered.
       </p>
 
       {/* Filters row */}
@@ -104,6 +106,8 @@ export default function OrdersPage() {
           <Skeleton className="h-16 w-full" />
           <Skeleton className="h-16 w-full" />
           <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-16 w-full" />
         </div>
       ) : !data || data.orders.length === 0 ? (
         <EmptyState
@@ -132,7 +136,7 @@ export default function OrdersPage() {
                 <TableHeaderCell>Date</TableHeaderCell>
                 <TableHeaderCell>Status</TableHeaderCell>
                 <TableHeaderCell>Total</TableHeaderCell>
-                <TableHeaderCell>{''}</TableHeaderCell>
+                <TableHeaderCell>{""}</TableHeaderCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -145,7 +149,7 @@ export default function OrdersPage() {
 
                 return (
                   <TableRow key={order.id} className="group">
-                    <TableCell className="font-medium text-gray-900">
+                    <TableCell className="font-medium  text-gray-900 dark:text-white cursor-pointer">
                       {order.orderNumber}
                     </TableCell>
 
@@ -160,7 +164,7 @@ export default function OrdersPage() {
                               className="object-cover"
                             />
                           </div>
-                          <span className="text-xs text-gray-500 whitespace-nowrap">
+                          <span className="text-xs text-gray-900 dark:text-white whitespace-nowrap">
                             {firstItem.variant.product.name}
                             {extraCount > 0 && ` +${extraCount} more`}
                           </span>
@@ -168,7 +172,7 @@ export default function OrdersPage() {
                       )}
                     </TableCell>
 
-                    <TableCell className="whitespace-nowrap text-gray-500">
+                    <TableCell className="whitespace-nowrap text-gray-900 dark:text-white ">
                       {new Date(order.createdAt).toLocaleDateString("en-NG", {
                         day: "numeric",
                         month: "short",
@@ -180,7 +184,7 @@ export default function OrdersPage() {
                       <OrderStatusBadge status={order.status} />
                     </TableCell>
 
-                    <TableCell className="font-semibold text-gray-900 whitespace-nowrap">
+                    <TableCell className="font-semibold  text-gray-900 dark:text-white whitespace-nowrap">
                       ₦{order.totalAmount.toLocaleString()}
                     </TableCell>
 

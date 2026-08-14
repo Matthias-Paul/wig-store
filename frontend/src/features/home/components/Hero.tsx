@@ -129,9 +129,11 @@ export function Hero() {
             </span>
             <div>
               <p className="text-sm font-semibold text-gray-900">
-                Worldwide Shipping
+                Secure Payment
               </p>
-              <p className="text-xs text-gray-500">Certified Quality</p>
+              <p className="text-xs text-gray-500">
+                Encrypted checkout via Paystack
+              </p>
             </div>
           </div>
 

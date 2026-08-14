@@ -27,14 +27,20 @@ export function AccountDropdown() {
 
   return (
     <div className="relative" ref={ref}>
-      <button onClick={() => setIsOpen((o) => !o)} aria-label="Account menu">
+      <button
+        className="cursor-pointer"
+        onClick={() => setIsOpen((o) => !o)}
+        aria-label="Account menu"
+      >
         <Avatar src={user.profileImage} name={user.name} size="sm" />
       </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg border border-gray-200 shadow-lg py-1 z-40">
           <div className="px-4 py-3 border-b border-gray-100">
-            <p className="text-sm font-medium truncate">{user.name}</p>
+            <p className="text-sm font-medium text-gray-500 truncate">
+              {user.name}
+            </p>
             <p className="text-xs text-gray-500 truncate">{user.email}</p>
           </div>
 

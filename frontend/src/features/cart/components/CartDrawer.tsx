@@ -52,7 +52,9 @@ export function CartDrawer() {
 
       <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl flex flex-col animate-slide-in">
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="font-heading text-brand font-semibold text-lg">Your Cart</h2>
+          <h2 className="font-heading text-brand  font-semibold text-lg">
+            Your Cart
+          </h2>
           <button
             onClick={close}
             aria-label="Close cart"
@@ -89,9 +91,9 @@ export function CartDrawer() {
 
         {cart && cart.items.length > 0 && (
           <div className="border-t border-gray-200 p-4 space-y-3">
-            <div className="flex items-center justify-between font-semibold">
+            <div className="flex text-brand items-center justify-between font-semibold">
               <span>Total</span>
-              <span className="text-brand">₦{cart.total.toLocaleString()}</span>
+              <span>₦{cart.total.toLocaleString()}</span>
             </div>
             <Button
               variant="primary"
@@ -102,7 +104,7 @@ export function CartDrawer() {
             </Button>
             <button
               onClick={handleViewFullCart}
-              className="w-full text-center text-sm text-brand hover:underline"
+              className="w-full text-center cursor-pointer text-sm text-brand hover:underline"
             >
               View Full Cart
             </button>

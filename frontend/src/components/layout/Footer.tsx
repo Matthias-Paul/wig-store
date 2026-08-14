@@ -9,7 +9,7 @@ export function Footer() {
     <>
       <footer className="bg-gray-900 text-gray-300">
         {/* Newsletter strip */}
-        <div className="border-b border-gray-800">
+        {/* <div className="border-b border-gray-800">
           <div className="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
               <h3 className="font-heading text-white text-xl">
@@ -30,7 +30,7 @@ export function Footer() {
               </Button>
             </form>
           </div>
-        </div>
+        </div> */}
 
         {/* Main link grid */}
         <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-5 gap-8 text-sm">
