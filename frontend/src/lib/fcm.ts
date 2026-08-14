@@ -15,9 +15,9 @@ export async function requestPushToken(): Promise<string | null> {
       return null;
     }
 
-    const registration = await navigator.serviceWorker.register(
-      "/firebase-messaging-sw.js",
-    );
+    // Register, then explicitly wait until it's actually active
+    await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    const registration = await navigator.serviceWorker.ready;
 
     const messaging = getMessaging(firebaseApp);
 

@@ -25,15 +25,13 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
             <button
               onClick={() => toggle(index)}
               aria-expanded={isOpen}
-              className="w-full flex items-center justify-between py-4 text-left"
+              className="w-full cursor-pointer flex items-center justify-between py-4 text-left"
             >
-              <span className="font-medium text-gray-900 pr-4">
-                {item.question}
-              </span>
+              <span className="font-medium pr-4">{item.question}</span>
               <ChevronDown
                 size={18}
                 className={clsx(
-                  "flex-shrink-0 text-gray-400 transition-transform",
+                  "shrink-0 text-gray-400 transition-transform",
                   isOpen && "rotate-180",
                 )}
               />

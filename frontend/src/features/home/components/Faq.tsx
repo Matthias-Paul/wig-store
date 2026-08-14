@@ -40,10 +40,10 @@ const FAQ_ITEMS = [
 export default function FAQPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="font-heading text-3xl text-center text-gray-900">
+      <h1 className="font-heading text-2xl sm:text-3xl text-center">
         Frequently Asked Questions
       </h1>
-      <p className="text-gray-500 text-sm text-center mt-2">
+      <p className=" text-xs sm:text-sm text-center mt-2">
         Everything you need to know before you shop.
       </p>
 
@@ -52,7 +52,7 @@ export default function FAQPage() {
       </div>
 
       <div className="text-center mt-10">
-        <p className="text-sm text-gray-500">Still have questions?</p>
+        <p className="text-sm ">Still have questions?</p>
         <a
           href="mailto:support@rockshairmpire.com"
           className="text-brand text-sm font-medium hover:underline"
