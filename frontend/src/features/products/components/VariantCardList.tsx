@@ -53,7 +53,7 @@ export function VariantCardList({
                 </div>
 
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-sm  font-medium text-gray-900 flex">
                     {variant.length}" · {variant.color}
                     {variant.laceType && ` · ${variant.laceType}`}
                     {variant.closureSize && ` · ${variant.closureSize}`}
