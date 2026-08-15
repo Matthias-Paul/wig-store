@@ -9,11 +9,11 @@
     "start": "concurrently \"npm run start:prod --prefix backend\" \"npm run start --prefix frontend\""
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.24",
+    "@nestjs/cli": "^11.0.24"
   },
   "dependencies": {
-  "concurrently": "^8.2.2"
-},
+    "concurrently": "^8.2.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Matthias-Paul/wig-store.git"
