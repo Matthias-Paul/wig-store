@@ -5,7 +5,7 @@ import { apiFetch } from "@/src/lib/apiClient";
 import { toast } from "sonner";
 import { registerDeviceToken } from "../../notifications/api/notificationsApi";
 import { requestPushToken } from "@/src/lib/fcm";
-import { auth, googleProvider } from "@/src/lib/googleAuthFirebase";
+import { auth, googleProvider } from "@/src/lib/firebase";
 
 export function useGoogleSignIn() {
   const queryClient = useQueryClient();

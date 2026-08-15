@@ -69,7 +69,7 @@ export function Hero() {
                 Shop the Collection
               </Button>
             </Link>
-            <Link href="/products?categoryId=hair-bundles">
+            <Link href="/products">
               <Button
                 variant="outline"
                 size="lg"

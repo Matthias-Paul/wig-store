@@ -33,7 +33,7 @@ export function Footer() {
         </div> */}
 
         {/* Main link grid */}
-        <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-5 gap-8 text-sm">
+        <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 text-sm">
           {/* Brand column — spans full width on mobile */}
           <div className="col-span-2 md:col-span-1">
             <h3 className="font-heading text-white text-xl mb-3">
@@ -166,7 +166,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 truncate md:col-span-1">
             <h4 className="text-white font-medium mb-3">Get in Touch</h4>
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-start gap-2">

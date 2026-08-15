@@ -4,7 +4,7 @@ import { signInWithPopup } from 'firebase/auth';
 import { getGuestId, clearGuestId } from '@/src/lib/guestId';
 import { apiFetch } from '@/src/lib/apiClient';
 import { Button } from '@/src/components/ui/Button';
-import { auth, googleProvider } from '@/src/lib/googleAuthFirebase';
+import { auth, googleProvider } from '@/src/lib/firebase';
 
 export function GoogleSignInButton() {
 
