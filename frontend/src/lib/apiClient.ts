@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BASE_URL = "/api/v1";
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;

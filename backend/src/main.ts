@@ -29,6 +29,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:4000',
       'https://rocks-hairmpire.vercel.app',
       'https://www.rocks-hairmpire.com',
     ],
@@ -48,9 +49,9 @@ async function bootstrap() {
 
         return new BadRequestException(firstMessage);
       },
-    }), 
+    }),
   );
 
-  await app.listen(process.env.PORT ?? 8000);
+  await app.listen(process.env.INTERNAL_API_PORT ?? 4000);
 }
 bootstrap();
