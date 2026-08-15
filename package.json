@@ -8,7 +8,8 @@
     "build": "npm run build --prefix backend && npm run build --prefix frontend",
     "start": "concurrently \"npm run start:prod --prefix backend\" \"npm run start --prefix frontend\""
   },
-   "devDependencies": {
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.24",
     "concurrently": "^8.2.2"
   },
   "repository": {
