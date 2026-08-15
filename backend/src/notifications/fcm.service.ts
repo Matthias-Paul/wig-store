@@ -9,6 +9,7 @@ export class FcmService {
     tokens: string[],
     title: string,
     body: string,
+    link?: string,
   ): Promise<void> {
     if (tokens.length === 0) return;
 
@@ -17,6 +18,8 @@ export class FcmService {
         admin.messaging().send({
           token,
           notification: { title, body },
+          data: link ? { link } : {},
+          webpush: link ? { fcmOptions: { link } } : undefined,
         }),
       ),
     );

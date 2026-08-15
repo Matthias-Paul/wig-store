@@ -16,8 +16,38 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
+  const link = payload.data?.link || self.location.origin;
+
   self.registration.showNotification(payload.notification.title, {
     body: payload.notification.body,
     icon: "/icon.png",
+    badge: "/icon.png",
+    data: { link },
+    actions: [{ action: "view", title: "View on Site" }],
   });
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const link = event.notification.data?.link || self.location.origin;
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((windowClients) => {
+        // If a tab is already open on the site, focus it and navigate there
+        for (const client of windowClients) {
+          if (
+            client.url.startsWith(self.location.origin) &&
+            "focus" in client
+          ) {
+            client.navigate(link);
+            return client.focus();
+          }
+        }
+        // Otherwise open a new tab
+        return clients.openWindow(link);
+      }),
+  );
 });

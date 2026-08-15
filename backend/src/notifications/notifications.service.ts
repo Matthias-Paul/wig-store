@@ -16,7 +16,6 @@ export class NotificationsService {
     private deviceTokenRepo: Repository<DeviceToken>,
     private readonly fcmService: FcmService,
   ) {}
-
   async create(params: {
     userId?: string;
     type: NotificationType;
@@ -33,14 +32,28 @@ export class NotificationsService {
       relatedOrderId: params.relatedOrderId,
       relatedProductId: params.relatedProductId,
     });
+
     await this.notificationRepo.save(notification);
 
     if (params.userId) {
       const deviceTokens = await this.deviceTokenRepo.find({
         where: { user: { id: params.userId } },
       });
+
       const tokens = deviceTokens.map((dt) => dt.token);
-      await this.fcmService.sendToTokens(tokens, params.title, params.message);
+
+      const link = params.relatedOrderId
+        ? `${process.env.FRONTEND_URL}/orders/${params.relatedOrderId}`
+        : process.env.FRONTEND_URL;
+
+      if (tokens.length > 0) {
+        await this.fcmService.sendToTokens(
+          tokens,
+          params.title,
+          params.message,
+          link,
+        );
+      }
     }
   }
 
