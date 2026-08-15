@@ -10,8 +10,10 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.24",
-    "concurrently": "^8.2.2"
   },
+  "dependencies": {
+  "concurrently": "^8.2.2"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Matthias-Paul/wig-store.git"

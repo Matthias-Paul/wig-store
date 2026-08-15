@@ -30,7 +30,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'http://localhost:4000',
-      'https://rocks-hairmpire.vercel.app',
+      'https://wig-store-1.onrender.com/',
       'https://www.rocks-hairmpire.com',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
