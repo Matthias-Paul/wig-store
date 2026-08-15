@@ -4,7 +4,7 @@ const FAQ_ITEMS = [
   {
     question: "How long does delivery take?",
     answer:
-      "Orders within Lagos typically arrive within 2-3 business days. Deliveries to other states may take 3-7 business days depending on your location.",
+      "Orders may take 3-7 business days depending on your location.",
   },
   {
     question: "Is the hair 100% human hair?",
