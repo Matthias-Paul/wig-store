@@ -2,15 +2,18 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User, Package, Bell, LogOut } from "lucide-react";
+import { User, Package, Bell, LogOut, LayoutDashboard } from "lucide-react";
 import { useSession } from "../hooks/useSession";
 import { useLogout } from "../hooks/useLogout";
 import { Avatar } from "@/src/components/ui/Avatar";
+import { useRequireAdmin } from "../hooks/useRequireAdmin";
 
 export function AccountDropdown() {
   const { user } = useSession();
   const logout = useLogout();
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthorized } = useRequireAdmin();
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -65,6 +68,16 @@ export function AccountDropdown() {
           >
             <Bell size={16} /> Notifications
           </Link>
+
+          {isAuthorized && (
+            <Link
+              href="/admin"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              <LayoutDashboard size={16} /> Dashboard
+            </Link>
+          )}
 
           <div className="border-t border-gray-100 mt-1 pt-1">
             <button

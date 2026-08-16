@@ -5,5 +5,6 @@ export function useCart() {
   return useQuery({
     queryKey: ["cart"],
     queryFn: getCart,
+    refetchOnMount: true,
   });
 }

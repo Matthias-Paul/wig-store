@@ -35,6 +35,7 @@ export default function ProductsPageContent() {
     categoryId: categoryId || undefined,
     limit: 12,
   });
+  console.log(data)
 
   function handleSearchChange(value: string) {
     setSearch(value);

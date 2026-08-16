@@ -20,8 +20,9 @@ messaging.onBackgroundMessage((payload) => {
 
   self.registration.showNotification(payload.notification.title, {
     body: payload.notification.body,
-    icon: "/icon.png",
-    badge: "/icon.png",
+    icon: "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg",
+    badge:
+      "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg",
     data: { link },
     actions: [{ action: "view", title: "View on Site" }],
   });

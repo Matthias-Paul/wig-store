@@ -1,4 +1,4 @@
-const BASE_URL = "/api/v1";
+const BASE_URL = "https://wig-store-1.onrender.com/api/v1";
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;

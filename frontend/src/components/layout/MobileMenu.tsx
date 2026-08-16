@@ -2,12 +2,13 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { X, Package, User, Bell, LogOut } from "lucide-react";
+import { X, Package, User, Bell, LogOut, LayoutDashboard } from "lucide-react";
 import { useSession } from "@/src/features/auth/hooks/useSession";
 import { useLogout } from "@/src/features/auth/hooks/useLogout";
 import { Avatar } from "@/src/components/ui/Avatar";
 import { GoogleIcon } from "@/src/components/ui/icons/GoogleIcon";
 import { useGoogleSignIn } from "@/src/features/auth/hooks/useGoogleSignIn";
+import { useRequireAdmin } from "@/src/features/auth/hooks/useRequireAdmin";
 
 export function MobileMenu({
   isOpen,
@@ -19,6 +20,7 @@ export function MobileMenu({
   const { user, isAuthenticated } = useSession();
   const logout = useLogout();
   const signIn = useGoogleSignIn();
+  const { isAuthorized } = useRequireAdmin();
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -40,7 +42,11 @@ export function MobileMenu({
       <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-xl flex flex-col animate-slide-in">
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           <span className="font-heading text-lg text-brand">Menu</span>
-          <button onClick={onClose} className="text-brand cursor-pointer" aria-label="Close menu">
+          <button
+            onClick={onClose}
+            className="text-brand cursor-pointer"
+            aria-label="Close menu"
+          >
             <X size={22} />
           </button>
         </div>
@@ -49,7 +55,9 @@ export function MobileMenu({
           <div className="flex items-center gap-3 p-4 border-b border-gray-100">
             <Avatar src={user.profileImage} name={user.name} size="sm" />
             <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-500 truncate">{user.name}</p>
+              <p className="text-sm font-medium text-gray-500 truncate">
+                {user.name}
+              </p>
               <p className="text-xs text-gray-500 truncate">{user.email}</p>
             </div>
           </div>
@@ -95,6 +103,15 @@ export function MobileMenu({
               >
                 <Bell size={18} /> Notifications
               </Link>
+
+              {isAuthorized && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <LayoutDashboard size={16} /> Dashboard
+                </Link>
+              )}
             </>
           )}
         </nav>

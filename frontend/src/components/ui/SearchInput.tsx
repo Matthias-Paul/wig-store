@@ -12,7 +12,7 @@ export function SearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
       <Input
         {...props}
         type="search"
-        className="w-full text-black dark:text-white rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand focus:border-brand"
+        className="w-full bg-white dark:bg-gray-500 text-black dark:text-white rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm outline-none focus:ring-1 focus:ring-brand focus:border-brand"
       />
     </div>
   );
