@@ -6,7 +6,7 @@ export function useAdminProductDetail(id: string | null) {
   return useQuery({
     queryKey: ["admin-product", id],
     queryFn: async () => {
-      const res = await apiFetch(`/products/${id}`);
+      const res = await apiFetch(`/products/get-by-id/${id}`);
       if (!res.ok) throw new Error("Product not found");
       return res.json() as Promise<Product>;
     },

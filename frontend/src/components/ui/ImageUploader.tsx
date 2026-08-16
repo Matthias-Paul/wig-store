@@ -51,7 +51,7 @@ export function ImageUploader({
         {images.map((url, index) => (
           <div
             key={url}
-            className="relative aspect-square rounded-lg overflow-hidden ring-1 ring-black/5 group"
+            className="relative  aspect-square rounded-lg overflow-hidden ring-1 ring-black/5 group"
           >
             <Image
               src={url}
@@ -62,7 +62,7 @@ export function ImageUploader({
             <button
               type="button"
               onClick={() => removeImage(index)}
-              className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute cursor-pointer top-1.5 right-1.5 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label="Remove image"
             >
               <X size={13} />
@@ -80,7 +80,7 @@ export function ImageUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isUploading}
-            className="aspect-square rounded-lg border-2 border-dashed border-gray-200 hover:border-brand/40 flex flex-col items-center justify-center gap-1.5 text-gray-400 hover:text-brand transition-colors"
+            className="aspect-square cursor-pointer rounded-lg border-2 border-dashed border-gray-200 hover:border-brand/40 flex flex-col items-center justify-center gap-1.5 text-gray-400 hover:text-brand transition-colors"
           >
             {isUploading ? (
               <Loader2 size={20} className="animate-spin" />
@@ -103,7 +103,7 @@ export function ImageUploader({
         className="hidden"
       />
 
-      <p className="text-xs text-gray-400 mt-2">
+      <p className="text-xs cursor-pointer text-gray-400 mt-2">
         {images.length}/{maxImages} images · First image is used as the cover
         photo
       </p>
