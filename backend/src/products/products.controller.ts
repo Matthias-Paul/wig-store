@@ -50,6 +50,12 @@ export class ProductsController {
     return this.productsService.findBySlug(slug);
   }
 
+  @Get('get-by-id/:id')
+  @Roles(UserRole.ADMIN)
+  findById(@Param('id') id: string) {
+    return this.productsService.findById(id);
+  }
+
   @Post()
   @Roles(UserRole.ADMIN)
   create(@Body() dto: CreateProductDto) {

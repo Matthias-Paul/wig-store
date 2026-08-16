@@ -25,6 +25,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     credentials: "include",
     headers: { "Content-Type": "application/json", ...options.headers },
   });
+  console.log("path", path);
 
   if (res.status === 401) {
     const refreshed = await refreshAccessToken();

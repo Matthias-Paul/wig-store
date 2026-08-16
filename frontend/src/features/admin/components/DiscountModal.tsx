@@ -94,11 +94,11 @@ export function DiscountModal({
               type="button"
               onClick={handleRemove}
               disabled={removeDiscount.isPending}
-              className="text-xs text-error hover:underline"
+              className="text-sm text-error cursor-pointer hover:underline"
             >
               {removeDiscount.isPending
                 ? "Removing..."
-                : "Remove current discount"}
+                : "Remove current discount?"}
             </button>
           ) : (
             <span />

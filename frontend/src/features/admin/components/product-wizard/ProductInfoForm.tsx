@@ -17,6 +17,8 @@ const schema = z.object({
   categoryId: z.string().min(1, "Please select a category"),
 });
 
+const EMPTY_IMAGES: string[] = [];
+
 export type ProductInfoFormValues = z.infer<typeof schema>;
 
 interface ProductInfoFormProps {
@@ -29,7 +31,7 @@ interface ProductInfoFormProps {
 
 export function ProductInfoForm({
   defaultValues,
-  defaultImages = [],
+  defaultImages = EMPTY_IMAGES,
   submitLabel,
   isSubmitting,
   onSubmit,
@@ -52,10 +54,6 @@ export function ProductInfoForm({
   useEffect(() => {
     if (defaultValues) reset(defaultValues);
   }, [defaultValues, reset]);
-
-  useEffect(() => {
-    setImages(defaultImages);
-  }, [defaultImages]);
 
   function handleFormSubmit(values: ProductInfoFormValues) {
     onSubmit({ ...values, images });

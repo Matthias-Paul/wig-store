@@ -105,7 +105,7 @@ export async function uploadImage(file: File): Promise<{ imageUrl: string }> {
   const formData = new FormData();
   formData.append("image", file);
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL ?? ""}/api/v1/uploads/image`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL ?? ""}/uploads/image`,
     {
       method: "POST",
       credentials: "include",

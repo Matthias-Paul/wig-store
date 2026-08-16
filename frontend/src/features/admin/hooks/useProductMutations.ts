@@ -126,7 +126,9 @@ export function useSetDiscount() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
       qc.invalidateQueries({ queryKey: ["products"] });
-      toast.success("Discount applied");
+      toast.success(
+        "Discount scheduled successfully. It will activate on the start date.",
+      );
     },
     onError: (e: Error) => toast.error(e.message),
   });
