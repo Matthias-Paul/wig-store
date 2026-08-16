@@ -175,6 +175,7 @@ export class ProductsService {
       page = 1,
       limit = 10,
     } = query;
+
     const skip = (page - 1) * limit;
 
     const qb = this.productRepo
@@ -182,16 +183,26 @@ export class ProductsService {
       .leftJoinAndSelect('product.category', 'category');
 
     if (search) {
-      qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
+      qb.andWhere('product.name ILIKE :search', {
+        search: `%${search}%`,
+      });
     }
+
     if (categoryId) {
-      qb.andWhere('category.id = :categoryId', { categoryId });
+      qb.andWhere('category.id = :categoryId', {
+        categoryId,
+      });
     }
+
     if (minPrice !== undefined || maxPrice !== undefined) {
       qb.andWhere(
-        `EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = product.id
+        `EXISTS (
+        SELECT 1
+        FROM product_variants pv
+        WHERE pv.product_id = product.id
         ${minPrice !== undefined ? 'AND pv.price >= :minPrice' : ''}
-        ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''})`,
+        ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''}
+      )`,
         { minPrice, maxPrice },
       );
     }
@@ -203,14 +214,26 @@ export class ProductsService {
       .getManyAndCount();
 
     const productIds = products.map((p) => p.id);
+
     const variantCounts = await this.getVariantCounts(productIds);
-    const productsWithCount = products.map((product) => ({
-      ...product,
-      variantCount: variantCounts[product.id] ?? 0,
-    }));
+
+    const productsWithCount = products.map((product) => {
+      const discountActive = isDiscountActive(product);
+
+      return {
+        ...product,
+
+        variantCount: variantCounts[product.id] ?? 0,
+
+        isOnDiscount: discountActive,
+
+        discountPercentage: discountActive ? product.discountPercentage : null,
+      };
+    });
 
     return {
       products: productsWithCount,
+
       pagination: {
         total,
         page,
