@@ -1,6 +1,12 @@
 import { Product } from '../../products/entities/product.entity';
 
 export function isDiscountActive(product: Product): boolean {
+    console.log('DISCOUNT DEBUG:', {
+      percentage: product.discountPercentage,
+      startDate: product.discountStartDate,
+      endDate: product.discountEndDate,
+      now: new Date(),
+    });
   if (
     !product.discountPercentage ||
     !product.discountStartDate ||
@@ -13,7 +19,10 @@ export function isDiscountActive(product: Product): boolean {
   return now >= product.discountStartDate && now <= product.discountEndDate;
 }
 
-export function getDiscountedPrice(originalPrice: number, product: Product): number {
+export function getDiscountedPrice(
+  originalPrice: number,
+  product: Product,
+): number {
   if (!isDiscountActive(product) || !product.discountPercentage) {
     return originalPrice;
   }

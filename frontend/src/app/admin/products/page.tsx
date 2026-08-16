@@ -162,7 +162,7 @@ export default function AdminProductsPage() {
                       />
                     </TableCell>
                     <TableCell>
-                      {product.discountPercentage ? (
+                      {product.isOnDiscount ? (
                         <Badge variant="gold">
                           {product.discountPercentage}% OFF
                         </Badge>

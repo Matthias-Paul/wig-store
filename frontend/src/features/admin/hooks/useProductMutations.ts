@@ -125,11 +125,7 @@ export function useSetDiscount() {
     }) => setDiscount(productId, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
-      qc.invalidateQueries({
-        queryKey: ["products"],
-        exact: false,
-        refetchType: "all",
-      });
+      qc.invalidateQueries({ queryKey: ["products"] });
       toast.success("Discount applied");
     },
     onError: (e: Error) => toast.error(e.message),
