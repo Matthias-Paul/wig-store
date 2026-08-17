@@ -272,6 +272,7 @@ export class ProductsService {
       where: { id, status: ProductStatus.PUBLISHED },
       relations: { category: true, variants: true },
     });
+    console.log(product, id);
     if (!product) {
       throw new NotFoundException('Product not found');
     }
