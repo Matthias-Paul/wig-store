@@ -301,6 +301,7 @@ export class ProductsService {
       product: updatedProduct,
     };
   }
+  
   async create(dto: CreateProductDto) {
     const slug = slugify(dto.name);
 

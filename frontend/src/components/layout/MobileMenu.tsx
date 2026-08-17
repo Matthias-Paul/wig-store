@@ -107,7 +107,7 @@ export function MobileMenu({
               {isAuthorized && (
                 <Link
                   href="/admin"
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-gray-700 hover:bg-gray-50"
                 >
                   <LayoutDashboard size={16} /> Dashboard
                 </Link>

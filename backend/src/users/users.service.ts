@@ -73,4 +73,8 @@ export class UsersService {
       },
     };
   }
+
+  async findAllForNotification(): Promise<User[]> {
+    return this.userRepo.find();
+  }
 }

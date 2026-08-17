@@ -11,20 +11,32 @@ export class FcmService {
     body: string,
     link?: string,
   ): Promise<void> {
-    if (tokens.length === 0) return;
+    const uniqueTokens = [...new Set(tokens.filter(Boolean))];
+
+    if (uniqueTokens.length === 0) return;
 
     const results = await Promise.allSettled(
-      tokens.map((token) =>
+      uniqueTokens.map((token) =>
         admin.messaging().send({
           token,
-          notification: { title, body },
+          notification: {
+            title,
+            body,
+          },
           data: link ? { link } : {},
-          webpush: link ? { fcmOptions: { link } } : undefined,
+          webpush: link
+            ? {
+                fcmOptions: {
+                  link,
+                },
+              }
+            : undefined,
         }),
       ),
     );
 
-    const failures = results.filter((r) => r.status === 'rejected');
+    const failures = results.filter((result) => result.status === 'rejected');
+
     if (failures.length > 0) {
       this.logger.warn(
         `${failures.length} push notification(s) failed to deliver`,

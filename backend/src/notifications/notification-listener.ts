@@ -4,18 +4,22 @@ import { NotificationsService } from './notifications.service';
 import { Order } from '../orders/entities/order.entity';
 import { Product } from '../products/entities/product.entity';
 import { NotificationType } from 'src/common/enums/notification-type.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class NotificationsListener {
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(
+    private readonly notificationsService: NotificationsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @OnEvent('order.placed')
   async handleOrderPlaced(order: Order) {
     await this.notificationsService.create({
       userId: order.user.id,
       type: NotificationType.ORDER_PLACED,
-      title: 'Order Placed',
-      message: `Your order ${order.orderNumber} has been placed successfully.`,
+      title: 'Order Placed Successfully',
+      message: `Your order #${order.orderNumber} has been successfully placed. We have received your order and recorded your order details.`,
       relatedOrderId: order.id,
     });
   }
@@ -26,7 +30,7 @@ export class NotificationsListener {
       userId: order.user.id,
       type: NotificationType.ORDER_PAID,
       title: 'Payment Confirmed',
-      message: `Payment for order ${order.orderNumber} was successful.`,
+      message: `Payment for order #${order.orderNumber} has been successfully received and confirmed. Thank you for your payment.`,
       relatedOrderId: order.id,
     });
   }
@@ -37,11 +41,10 @@ export class NotificationsListener {
       userId: order.user.id,
       type: NotificationType.PAYMENT_FAILED,
       title: 'Payment Failed',
-      message: `Payment for order ${order.orderNumber} could not be processed.`,
+      message: `We could not process the payment for order #${order.orderNumber}. Please review your payment details and try again.`,
       relatedOrderId: order.id,
     });
   }
-
   @OnEvent('order.status_updated')
   async handleStatusUpdated(order: Order, status: string) {
     const typeMap: Record<string, NotificationType> = {
@@ -56,23 +59,41 @@ export class NotificationsListener {
       delivered: 'Order Delivered',
     };
 
+    const messageMap: Record<string, string> = {
+      processing: `Your order #${order.orderNumber} is now being processed. Our team is preparing your order for fulfillment.`,
+
+      shipped: `Your order #${order.orderNumber} has been shipped and is on its way to you. You’ll receive an update once it has been delivered.`,
+
+      delivered: `Your order #${order.orderNumber} has been delivered successfully. We hope you enjoy your purchase. Thank you for shopping with us!`,
+    };
+
+    // Ignore statuses that don't have a notification type
+    if (!typeMap[status]) return;
+
     await this.notificationsService.create({
       userId: order.user.id,
       type: typeMap[status],
       title: titleMap[status] ?? 'Order Update',
-      message: `Order ${order.orderNumber} is now ${status}.`,
+      message:
+        messageMap[status] ??
+        `There has been an update to your order #${order.orderNumber}.`,
       relatedOrderId: order.id,
     });
   }
-
   @OnEvent('product.created')
   async handleProductCreated(product: Product) {
-    await this.notificationsService.create({
-      // no userId — this is an admin/system-facing notification
-      type: NotificationType.PRODUCT_CREATED,
-      title: 'New Product Created',
-      message: `"${product.name}" was added to the catalog.`,
-      relatedProductId: product.id,
-    });
+    const users = await this.usersService.findAllForNotification();
+
+    await Promise.all(
+      users.map((user) =>
+        this.notificationsService.create({
+          userId: user.id,
+          type: NotificationType.PRODUCT_CREATED,
+          title: 'New Product Available',
+          message: `"${product.name}" is now available in our store. Explore the latest addition to our collection.`,
+          relatedProductId: product.id,
+        }),
+      ),
+    );
   }
 }

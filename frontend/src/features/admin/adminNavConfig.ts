@@ -5,6 +5,8 @@ import {
   CreditCard,
   Truck,
   Bell,
+  Users,
+  Store,
   type LucideIcon,
 } from "lucide-react";
 
@@ -20,5 +22,6 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Transactions", href: "/admin/transactions", icon: CreditCard },
   { label: "Delivery Fees", href: "/admin/delivery-fees", icon: Truck },
-  { label: "Notifications", href: "/admin/notifications", icon: Bell },
+  { label: "Users", href: "/admin/users", icon: Users },
+  { label: "Back To Store", href: "/products", icon: Store },
 ];
