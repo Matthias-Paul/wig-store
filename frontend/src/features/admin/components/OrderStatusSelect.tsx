@@ -53,7 +53,7 @@ export function OrderStatusSelect({
           updateStatus.mutate({ id: orderId, status: e.target.value });
         }
       }}
-      className="text-xs border border-gray-200 rounded-md px-2 py-1.5 outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-white disabled:opacity-50"
+      className="text-xs border border-gray-200 rounded-md px-2 py-1.5 outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-white cursor-pointer disabled:opacity-50"
     >
       <option value="" disabled>
         Update status...
