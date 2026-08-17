@@ -267,9 +267,9 @@ export class ProductsService {
     };
   }
 
-  async findByIdPublic(slug: string) {
+  async findByIdPublic(id: string) {
     const product = await this.productRepo.findOne({
-      where: { slug, status: ProductStatus.PUBLISHED },
+      where: { id, status: ProductStatus.PUBLISHED },
       relations: { category: true, variants: true },
     });
     if (!product) {
