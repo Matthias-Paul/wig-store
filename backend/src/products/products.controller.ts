@@ -50,7 +50,7 @@ export class ProductsController {
     return this.productsService.findBySlug(slug);
   }
 
-  @Get(':id')
+  @Get('get/:id')
   @AllowAnonymous()
   findByIdForUser(@Param('id') id: string) {
     return this.productsService.findByIdPublic(id);

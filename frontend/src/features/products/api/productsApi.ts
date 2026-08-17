@@ -25,3 +25,9 @@ export async function getProductBySlug(slug: string): Promise<Product> {
   if (!res.ok) throw new Error("Product not found");
   return res.json();
 }
+
+export async function getProductById(id: string): Promise<Product> {
+  const res = await apiFetch(`/products/get${id}`);
+  if (!res.ok) throw new Error("Product not found");
+  return res.json();
+}
