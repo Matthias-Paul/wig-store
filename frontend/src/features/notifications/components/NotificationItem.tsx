@@ -34,9 +34,9 @@ export function NotificationItem({
 const href = notification.relatedOrderId
   ? `/orders/${notification.relatedOrderId}`
   : notification.relatedProductId
-    ? `/products/${notification.relatedProductId}`
+    ? `/products/id/${notification.relatedProductId}`
     : undefined;
-    
+
   const content = (
     <div
       className={clsx(

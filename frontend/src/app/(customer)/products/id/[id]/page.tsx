@@ -171,7 +171,7 @@ export default function ProductDetailPage() {
         excludeProductId={product.id}
       />
 
-      <FAQPage/>
+      <FAQPage />
 
       <StickyAddToCartBar
         productName={product.name}
