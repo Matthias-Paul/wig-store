@@ -17,7 +17,7 @@ export function TransactionsSummary({
   ).length;
 
   return (
-    <div className="grid grid-cols-3 gap-3 mb-5">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
       <div className="bg-white rounded-lg border border-gray-200 p-3.5 flex items-center gap-2.5">
         <span className="h-8 w-8 rounded-full bg-success/10 text-success flex items-center justify-center flex-shrink-0">
           <CheckCircle2 size={15} />

@@ -29,8 +29,8 @@ export default function LoginPage() {
     });
   }
 
-const LOGO_URL =
-  "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg";
+  const LOGO_URL =
+    "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg";
 
   return (
     <div className="min-h-screen grid md:grid-cols-2">
@@ -79,11 +79,11 @@ const LOGO_URL =
             <a href="/terms" className="underline hover:text-gray-600">
               Terms of Service
             </a>{" "}
-            and{" "}
+            {/* and{" "}
             <a href="/privacy" className="underline hover:text-gray-600">
               Privacy Policy
             </a>
-            .
+            . */}
           </p>
         </div>
       </div>

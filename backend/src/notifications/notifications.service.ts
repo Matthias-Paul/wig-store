@@ -44,8 +44,10 @@ export class NotificationsService {
 
       const link = params.relatedOrderId
         ? `${process.env.FRONTEND_URL}/orders/${params.relatedOrderId}`
-        : process.env.FRONTEND_URL;
-
+        : params.relatedProductId
+          ? `${process.env.FRONTEND_URL}/products/${params.relatedProductId}`
+          : process.env.FRONTEND_URL;
+          
       if (tokens.length > 0) {
         await this.fcmService.sendToTokens(
           tokens,

@@ -31,10 +31,12 @@ export function NotificationItem({
   onRead: (id: string) => void;
 }) {
   const Icon = TYPE_ICONS[notification.type] ?? Package;
-  const href = notification.relatedOrderId
-    ? `/orders/${notification.relatedOrderId}`
+const href = notification.relatedOrderId
+  ? `/orders/${notification.relatedOrderId}`
+  : notification.relatedProductId
+    ? `/products/${notification.relatedProductId}`
     : undefined;
-
+    
   const content = (
     <div
       className={clsx(
@@ -45,7 +47,7 @@ export function NotificationItem({
     >
       <div
         className={clsx(
-          "flex-shrink-0 h-9 w-9 rounded-full flex items-center justify-center",
+          "shrink-0 h-9 w-9 rounded-full flex items-center justify-center",
           notification.isRead
             ? "bg-gray-100 text-gray-400"
             : "bg-brand-tint text-brand",
@@ -70,7 +72,7 @@ export function NotificationItem({
         </p>
       </div>
       {!notification.isRead && (
-        <div className="h-2 w-2 rounded-full bg-brand flex-shrink-0 mt-1.5" />
+        <div className="h-2 w-2 rounded-full bg-brand shrink-0 mt-1.5" />
       )}
     </div>
   );

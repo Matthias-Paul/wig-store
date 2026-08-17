@@ -91,7 +91,7 @@ export class NotificationsListener {
           type: NotificationType.PRODUCT_CREATED,
           title: 'New Product Available',
           message: `"${product.name}" is now available in our store. Explore the latest addition to our collection.`,
-          relatedProductId: product.id,
+          relatedProductId: product.slug,
         }),
       ),
     );

@@ -19,6 +19,7 @@ import { Button } from "@/src/components/ui/Button";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { NIGERIAN_STATES } from "@/src/lib/nigerianStates";
+import { Link } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -187,6 +188,17 @@ export default function CheckoutPage() {
               ? "Select a state to continue"
               : `Continue to Payment · ₦${orderTotal.toLocaleString()}`}
         </Button>
+
+        <div className="text-sm inline text-gray-600">
+          Please note: All sales are final and refunds are not available.
+          Exchanges may only be accepted under specific conditions.{" "}
+          <span className="text-gray-400 text-xs text-center mt-8 leading-relaxed">
+            Please review the{" "}
+            <a href="/returns" className="underline hover:text-gray-600">
+              Return And Refund Policy
+            </a>{" "}
+          </span>
+        </div>
       </form>
     </div>
   );

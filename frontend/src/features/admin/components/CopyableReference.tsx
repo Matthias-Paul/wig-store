@@ -20,11 +20,11 @@ export function CopyableReference({ value }: { value: string }) {
     >
       <span className="truncate max-w-[140px]">{value}</span>
       {copied ? (
-        <Check size={12} className="text-success flex-shrink-0" />
+        <Check size={12} className="text-success shrink-0" />
       ) : (
         <Copy
           size={12}
-          className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="shrink-0 cursor-pointer"
         />
       )}
     </button>

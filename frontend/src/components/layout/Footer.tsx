@@ -1,8 +1,10 @@
 // components/layout/Footer.tsx
 import Link from 'next/link';
 import {  Mail, Phone, MapPin } from 'lucide-react';
-import { Input } from '@/src/components/ui/Input';
-import { Button } from '@/src/components/ui/Button';
+// import { Input } from '@/src/components/ui/Input';
+// import { Button } from '@/src/components/ui/Button';
+import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export function Footer() {
   return (
@@ -46,24 +48,30 @@ export function Footer() {
             <div className="flex gap-3 mt-4">
               <a
                 href="#"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
                 className="h-9 w-9 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand transition-colors"
               >
-                <Mail size={16} />
+                <FaInstagram size={16} />
               </a>
               <a
                 href="#"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Facebook"
                 className="h-9 w-9 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand transition-colors"
               >
-                <Mail size={16} />
+                <FaFacebook size={16} />
               </a>
               <a
                 href="#"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Twitter"
                 className="h-9 w-9 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand transition-colors"
               >
-                <Mail size={16} />
+                <FaXTwitter size={16} />
               </a>
             </div>
           </div>
@@ -157,10 +165,10 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href="/terms"
                   className="hover:text-white transition-colors"
                 >
-                  Contact Us
+                  Terms Of Service
                 </Link>
               </li>
             </ul>
@@ -189,15 +197,15 @@ export function Footer() {
         <div className="border-t border-gray-800">
           <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-gray-500">
             <p>
-              © {new Date().getFullYear()} Rockshairmpire. All rights reserved.
+              @ {new Date().getFullYear()} Rockshairmpire. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
-              <Link
+              {/* <Link
                 href="/privacy"
                 className="hover:text-gray-300 transition-colors"
               >
                 Privacy Policy
-              </Link>
+              </Link> */}
               <Link
                 href="/terms"
                 className="hover:text-gray-300 transition-colors"
