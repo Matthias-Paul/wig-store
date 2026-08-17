@@ -14,12 +14,20 @@ import { RevenueChart } from "@/src/features/admin/components/RevenueChart";
 import { OrdersByStatusChart } from "@/src/features/admin/components/OrdersByStatusChart";
 import { RecentActivityFeed } from "@/src/features/admin/components/RecentActivityFeed";
 import { Skeleton } from "@/src/components/ui/Skeleton";
+import { useSession } from "@/src/features/auth/hooks/useSession";
 
 export default function AdminDashboardPage() {
   const { data: stats, isLoading } = useAdminStats();
+    const { user } = useSession();
+  
 
   return (
     <AdminLayout title="Dashboard">
+      <div className="text-lg text-brand font-bold">Hello, {user?.name}</div>
+      <p className="text-sm text-brand mb-4">
+        Here’s a quick overview of your store’s performance and latest
+        updates.{" "}
+      </p>
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (

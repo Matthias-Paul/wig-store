@@ -10,7 +10,7 @@ export function useUpdateOrderStatus() {
     onSuccess: (_, { id }) => {
       qc.invalidateQueries({ queryKey: ["admin-orders"] });
       qc.invalidateQueries({ queryKey: ["admin-order", id] });
-      toast.success(`Order status successfully updated to ${status}`);
+      toast.success("Order status succesfully updated");
     },
     onError: (e: Error) => toast.error(e.message),
   });

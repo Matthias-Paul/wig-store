@@ -6,6 +6,7 @@ import {
   Truck,
   Bell,
   Users,
+  Tags,
   Store,
   type LucideIcon,
 } from "lucide-react";
@@ -21,7 +22,9 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Transactions", href: "/admin/transactions", icon: CreditCard },
+  { label: "Categories", href: "/admin/categories", icon: Tags },
   { label: "Delivery Fees", href: "/admin/delivery-fees", icon: Truck },
   { label: "Users", href: "/admin/users", icon: Users },
+  { label: "Notifications", href: "/admin/Notifications", icon: Bell },
   { label: "Back To Store", href: "/products", icon: Store },
 ];

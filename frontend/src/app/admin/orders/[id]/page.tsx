@@ -20,7 +20,7 @@ export default function AdminOrderDetailPage() {
     <AdminLayout title="Order Details">
       <button
         onClick={() => router.push("/admin/orders")}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5"
+        className="flex items-center cursor-pointer gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5"
       >
         <ArrowLeft size={15} /> Back to Orders
       </button>
@@ -121,7 +121,7 @@ export default function AdminOrderDetailPage() {
 
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="font-heading text-base text-gray-900 mb-4">
-              Customer & Delivery
+              Customer And Delivery
             </h3>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="flex items-start gap-3">
