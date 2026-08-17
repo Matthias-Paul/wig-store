@@ -267,6 +267,30 @@ export class ProductsService {
     };
   }
 
+  async findByIdPublic(slug: string) {
+    const product = await this.productRepo.findOne({
+      where: { slug, status: ProductStatus.PUBLISHED },
+      relations: { category: true, variants: true },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const discountActive = isDiscountActive(product);
+
+    return {
+      ...product,
+      isOnDiscount: discountActive,
+      variants: product.variants.map((variant) => ({
+        ...variant,
+        originalPrice: variant.price,
+        discountedPrice: discountActive
+          ? getDiscountedPrice(Number(variant.price), product)
+          : Number(variant.price),
+      })),
+    };
+  }
+
   async findById(id: string) {
     const product = await this.productRepo.findOne({
       where: { id },
@@ -301,7 +325,7 @@ export class ProductsService {
       product: updatedProduct,
     };
   }
-  
+
   async create(dto: CreateProductDto) {
     const slug = slugify(dto.name);
 
