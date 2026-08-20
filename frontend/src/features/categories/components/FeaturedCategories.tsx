@@ -27,7 +27,7 @@ export function FeaturedCategories() {
               Shop by Category
             </h2>
             <p className="text-gray-500 text-sm mt-2">
-              Find exactly what you're looking for
+              Find exactly what you are looking for
             </p>
           </div>
 

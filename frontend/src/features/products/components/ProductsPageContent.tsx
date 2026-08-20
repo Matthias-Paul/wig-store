@@ -12,10 +12,12 @@ import { ShopBanner } from "@/src/features/products/components/ShopBanner";
 import { Pagination } from "@/src/components/ui/Pagination";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { Button } from "@/src/components/ui/Button";
+import { generateShopSeed } from "@/src/lib/shopSeed";
 
 export default function ProductsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [seed] = useState(() => generateShopSeed());
 
   const initialCategoryId = searchParams.get("categoryId") ?? "";
 
@@ -33,6 +35,7 @@ export default function ProductsPageContent() {
     page,
     search: search || undefined,
     categoryId: categoryId || undefined,
+    seed,
     limit: 12,
   });
   console.log(data)

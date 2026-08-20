@@ -25,8 +25,7 @@ export function ShopBanner({ category }: ShopBannerProps) {
             {category.name}
           </h1>
           <p className="text-white/80 text-sm md:text-base mt-2 max-w-md">
-            Explore our full range of {category.name.toLowerCase()} — handpicked
-            for quality and finished with care.
+            {category.description}
           </p>
         </div>
       </div>

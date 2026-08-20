@@ -18,6 +18,7 @@ export interface Category {
   name: string;
   slug: string;
   image: string;
+  description:string;
 }
 
 export interface Product {
@@ -50,6 +51,7 @@ export interface PaginatedProducts {
 export interface ProductQueryParams {
   search?: string;
   categoryId?: string;
+  seed?: number;
   minPrice?: number;
   maxPrice?: number;
   page?: number;

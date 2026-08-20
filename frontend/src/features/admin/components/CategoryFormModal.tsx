@@ -13,9 +13,11 @@ import {
   useUpdateCategory,
 } from "../hooks/useCategoryMutations";
 import type { Category } from "@/src/types/product";
+import { Textarea } from "@/src/components/ui/Textarea";
 
 const schema = z.object({
   name: z.string().min(1, "Category name is required").max(100),
+  description: z.string().min(1, "Category description is required").max(400),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -48,13 +50,14 @@ export function CategoryFormModal({
   useEffect(() => {
     if (isOpen) {
       reset({ name: category?.name ?? "" });
+      reset({ description: category?.description ?? "" });
       setImages(category ? [category.image] : []);
     }
   }, [isOpen, category, reset]);
 
   function onSubmit(values: FormValues) {
     if (images.length === 0) return;
-    const payload = { name: values.name, image: images[0] };
+    const payload = { name: values.name, description: values.description, image: images[0] };
 
     if (isEditing) {
       updateCategory.mutate(payload, { onSuccess: onClose });
@@ -75,6 +78,12 @@ export function CategoryFormModal({
           placeholder="e.g. Hair Bundles"
           {...register("name")}
           error={errors.name?.message}
+        />
+        <Textarea
+          label="Category Description"
+          placeholder="e.g.  Budget friendly wigs for a flawless look."
+          {...register("description")}
+          error={errors.description?.message}
         />
 
         <div>

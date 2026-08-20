@@ -73,6 +73,9 @@ export default function AdminCategoriesPage() {
                 <h3 className="font-heading text-white text-sm">
                   {category.name}
                 </h3>
+                <h3 className="font-heading text-white text-[10px]">
+                  {category.description}
+                </h3>
               </div>
 
               <div className="absolute top-2 right-2 flex gap-1">
