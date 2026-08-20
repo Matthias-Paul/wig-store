@@ -52,15 +52,29 @@ export class UsersService {
   }
 
   async findAll(query: GetUsersQueryDto) {
-    const { role, page = 1, limit = 10 } = query;
+    const { role, page = 1, limit = 10, search } = query;
+
     const skip = (page - 1) * limit;
 
-    const [users, totalUsers] = await this.userRepo.findAndCount({
-      where: role ? { role } : {},
-      order: { createdAt: 'DESC' },
-      skip,
-      take: limit,
-    });
+    const qb = this.userRepo
+      .createQueryBuilder('user')
+      .orderBy('user.createdAt', 'DESC')
+      .skip(skip)
+      .take(limit);
+
+    // Filter by role
+    if (role) {
+      qb.andWhere('user.role = :role', { role });
+    }
+
+    // Search by name OR email
+    if (search) {
+      qb.andWhere('(user.name ILIKE :search OR user.email ILIKE :search)', {
+        search: `%${search}%`,
+      });
+    }
+
+    const [users, totalUsers] = await qb.getManyAndCount();
 
     return {
       users,

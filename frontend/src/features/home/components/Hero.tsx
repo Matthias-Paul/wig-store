@@ -99,7 +99,7 @@ export function Hero() {
                 ))}
               </div>
               <p className="text-xs text-gray-500 mt-0.5">
-                Trusted by 100+ happy customers
+                Trusted by 50+ happy customers
               </p>
             </div>
           </div>
@@ -139,7 +139,7 @@ export function Hero() {
 
           {/* Floating stat card */}
           <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl px-5 py-4 border border-gray-100">
-            <p className="font-heading text-2xl text-brand">100+</p>
+            <p className="font-heading text-2xl text-brand">50+</p>
             <p className="text-xs text-gray-500">Happy Customers</p>
           </div>
         </div>

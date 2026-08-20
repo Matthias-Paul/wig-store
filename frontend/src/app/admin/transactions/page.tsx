@@ -52,12 +52,12 @@ export default function AdminTransactionsPage() {
           : ""}
       </p>
 
-      {data && data.transactions.length > 0 && (
+      {/* {data && data.transactions.length > 0 && (
         <TransactionsSummary
           transactions={data.transactions}
           total={data.pagination.total}
         />
-      )}
+      )} */}
 
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="flex-1">

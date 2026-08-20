@@ -3,8 +3,7 @@ import { Accordion } from "@/src/components/ui/Accordion";
 const FAQ_ITEMS = [
   {
     question: "How long does delivery take?",
-    answer:
-      "Orders may take 3-7 business days depending on your location.",
+    answer: "Orders may take 3-7 business days depending on your location.",
   },
   {
     question: "Is the hair 100% human hair?",
@@ -18,7 +17,7 @@ const FAQ_ITEMS = [
   {
     question: "Can I return or exchange an item?",
     answer:
-      "Due to the nature of hair products, we only accept returns for items that are unopened, unused, and in their original packaging, within 3 days of delivery. Contact us before initiating a return.",
+      "Due to the nature of hair products, we only accept exchange for items that are unused, and in their original packaging, within 3 days of delivery. Contact us within 24hours of delivery  before initiating a return.",
   },
   {
     question: "What payment methods do you accept?",
