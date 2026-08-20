@@ -6,7 +6,7 @@ import { useProductDetail } from "@/src/features/products/hooks/useProductDetail
 import { VariantCardList } from "@/src/features/products/components/VariantCardList";
 import { ProductImageGallery } from "@/src/features/products/components/ProductImageGallery";
 import { RelatedProducts } from "@/src/features/products/components/RelatedProducts";
-import { StickyAddToCartBar } from "@/src/features/products/components/StickyAddToCartBar";
+// import { StickyAddToCartBar } from "@/src/features/products/components/StickyAddToCartBar";
 import { ShareButtons } from "@/src/features/products/components/ShareButtons";
 import { useAddToCart } from "@/src/features/cart/hooks/useAddToCart";
 import { Button } from "@/src/components/ui/Button";
@@ -173,12 +173,12 @@ export default function ProductDetailPage() {
 
       <FAQPage/>
 
-      <StickyAddToCartBar
+      {/* <StickyAddToCartBar
         productName={product.name}
         selectedVariant={selectedVariant}
         onAddToCart={handleAddToCart}
         isPending={addToCart.isPending}
-      />
+      /> */}
     </>
   );
 }

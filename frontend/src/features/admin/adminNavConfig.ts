@@ -25,6 +25,6 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { label: "Categories", href: "/admin/categories", icon: Tags },
   { label: "Delivery Fees", href: "/admin/delivery-fees", icon: Truck },
   { label: "Users", href: "/admin/users", icon: Users },
-  { label: "Notifications", href: "/admin/Notifications", icon: Bell },
+  // { label: "Notifications", href: "/admin/notifications", icon: Bell },
   { label: "Back To Store", href: "/products", icon: Store },
 ];

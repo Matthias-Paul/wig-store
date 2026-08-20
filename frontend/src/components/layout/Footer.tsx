@@ -183,7 +183,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <Phone size={15} className="mt-0.5 flex-shrink-0" />
-                <span>+234 800 000 0000</span>
+                <span>+2348068953863</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin size={15} className="mt-0.5 flex-shrink-0" />

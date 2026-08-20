@@ -21,3 +21,9 @@ export async function registerDeviceToken(token: string): Promise<void> {
   });
   if (!res.ok) throw new Error("Failed to register device for notifications");
 }
+
+export async function getAllNotificationsForAdmin(page = 1): Promise<PaginatedNotifications> {
+  const res = await apiFetch(`/notifications?page=${page}`);
+  if (!res.ok) throw new Error("Failed to load notifications");
+  return res.json();
+}

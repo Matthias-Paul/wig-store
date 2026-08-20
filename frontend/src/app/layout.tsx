@@ -3,6 +3,7 @@ import "./globals.css";
 import {Providers} from "./providers"
 import { Toaster } from "sonner";
 import { CartDrawerProvider } from "../features/cart/CartDrawerContext";
+import { WhatsAppButton } from "../components/layout/WhatsAppButton";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
                 },
               }}
             />
+            <WhatsAppButton />
           </CartDrawerProvider>
         </Providers>
       </body>

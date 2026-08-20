@@ -16,6 +16,9 @@ export class Category {
   @Column({ unique: true })
   name: string;
 
+  @Column({ default: 'Curated Wig' })
+  description: string;
+
   @Column({ unique: true })
   slug: string;
 

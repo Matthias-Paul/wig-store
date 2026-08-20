@@ -30,6 +30,7 @@ export class CategoriesService {
     const category = this.categoryRepo.create({
       name: dto.name,
       slug,
+      description: dto.description,
       image: dto.image,
     });
     return this.categoryRepo.save(category);
