@@ -1,4 +1,3 @@
-// backend/src/products/dtos/get-products-query.dto.ts
 import {
   IsOptional,
   IsString,
@@ -29,11 +28,6 @@ export class GetProductsQueryDto {
   @IsNumber()
   @Min(0)
   maxPrice?: number;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  seed?: number; // between -1 and 1, used to deterministically randomize order for one session
 
   @IsOptional()
   @Type(() => Number)

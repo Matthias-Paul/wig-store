@@ -88,7 +88,6 @@ export class ProductsService {
     const {
       search,
       categoryId,
-      seed,
       minPrice,
       maxPrice,
       page = 1,
@@ -97,11 +96,6 @@ export class ProductsService {
 
     const skip = (page - 1) * limit;
 
-    // Set random seed if provided
-    if (seed !== undefined) {
-      await this.productRepo.manager.query('SELECT setseed($1)', [seed]);
-    }
-
     const qb = this.productRepo
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.category', 'category')
@@ -109,21 +103,18 @@ export class ProductsService {
         status: ProductStatus.PUBLISHED,
       });
 
-    // Search by product name
     if (search) {
       qb.andWhere('product.name ILIKE :search', {
         search: `%${search}%`,
       });
     }
 
-    // Filter by category
     if (categoryId) {
       qb.andWhere('category.id = :categoryId', {
         categoryId,
       });
     }
 
-    // Filter by variant price
     if (minPrice !== undefined || maxPrice !== undefined) {
       qb.andWhere(
         `EXISTS (
@@ -133,23 +124,17 @@ export class ProductsService {
         ${minPrice !== undefined ? 'AND pv.price >= :minPrice' : ''}
         ${maxPrice !== undefined ? 'AND pv.price <= :maxPrice' : ''}
       )`,
-        {
-          minPrice,
-          maxPrice,
-        },
+        { minPrice, maxPrice },
       );
     }
 
-    // Ordering
-    if (seed !== undefined) {
-      qb.orderBy('RANDOM()');
-    } else {
-      qb.orderBy('product.createdAt', 'DESC');
-    }
+    const [products, total] = await qb
+      .orderBy('product.createdAt', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
 
-    const [products, total] = await qb.skip(skip).take(limit).getManyAndCount();
-
-    const productIds = products.map((product) => product.id);
+    const productIds = products.map((p) => p.id);
 
     const variantCounts = await this.getVariantCounts(productIds);
     const minPrices = await this.getMinPrices(productIds);
@@ -168,9 +153,9 @@ export class ProductsService {
           : startingPrice,
       };
     });
-
     return {
       products: productsWithDetails,
+
       pagination: {
         total,
         page,
@@ -180,6 +165,7 @@ export class ProductsService {
       },
     };
   }
+
   async findAllForAdmin(query: GetProductsQueryDto) {
     const {
       search,
