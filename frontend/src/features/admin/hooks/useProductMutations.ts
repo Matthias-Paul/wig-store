@@ -32,6 +32,8 @@ export function useUpdateProduct(productId: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
       qc.invalidateQueries({ queryKey: ["admin-product", productId] });
+      qc.invalidateQueries({ queryKey: ["products"] });
+
       toast.success("Product updated");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -44,6 +46,8 @@ export function useDeleteProduct() {
     mutationFn: (id: string) => deleteProduct(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
+      qc.invalidateQueries({ queryKey: ["products"] });
+
       toast.success("Product deleted");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -62,6 +66,8 @@ export function useUpdateProductStatus() {
     }) => updateProductStatus(id, status),
     onSuccess: (_, { status }) => {
       qc.invalidateQueries({ queryKey: ["admin-products"] });
+      qc.invalidateQueries({ queryKey: ["products"] });
+
       toast.success(
         status === "published" ? "Product published" : "Moved back to draft",
       );
@@ -77,6 +83,8 @@ export function useCreateVariant(productId: string) {
       createVariant(productId, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-product", productId] });
+      qc.invalidateQueries({ queryKey: ["products"] });
+
       toast.success("Variant added");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -95,6 +103,8 @@ export function useUpdateVariant(productId: string) {
     }) => updateVariant(productId, variantId, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-product", productId] });
+      qc.invalidateQueries({ queryKey: ["products"] });
+
       toast.success("Variant updated");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -107,6 +117,8 @@ export function useDeleteVariant(productId: string) {
     mutationFn: (variantId: string) => deleteVariant(productId, variantId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-product", productId] });
+      qc.invalidateQueries({ queryKey: ["products"] });
+
       toast.success("Variant removed");
     },
     onError: (e: Error) => toast.error(e.message),

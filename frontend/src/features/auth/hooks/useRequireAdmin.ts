@@ -12,7 +12,7 @@ export function useRequireAdmin() {
     if (isLoading) return;
 
     if (!isAuthenticated) {
-      router.replace("/login?redirect=/admin");
+      router.replace("/");
       return;
     }
 
