@@ -51,13 +51,15 @@ export function ProductImageGallery({
   }
 
   if (images.length === 0) {
-    return <div className="aspect-square bg-gray-100 rounded-lg" />;
+    return (
+      <div className="h-[24rem] w-full rounded-lg bg-gray-100 sm:h-[28rem] md:h-[32rem]" />
+    );
   }
 
   return (
-    <div>
+    <div className="w-full min-w-0">
       <div
-        className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 select-none"
+        className="relative overflow-hidden rounded-lg bg-gray-100 select-none"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -65,8 +67,9 @@ export function ProductImageGallery({
         <Image
           src={images[activeIndex]}
           alt={alt}
-          fill
-          className="object-cover"
+          width={900}
+          height={1200}
+          className="h-[24rem] w-full object-cover object-top sm:h-[28rem] md:h-[32rem]"
           sizes="(max-width: 768px) 100vw, 50vw"
           priority
         />
@@ -107,13 +110,14 @@ export function ProductImageGallery({
       </div>
 
       {images.length > 1 && (
-        <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+        <div className="flex flex-wrap gap-2 mt-3 w-full min-w-0">
           {images.map((image, index) => (
             <button
-              key={image}
+              key={`${image}-${index}`}
+              type="button"
               onClick={() => setActiveIndex(index)}
               className={clsx(
-                "relative flex-shrink-0 cursor-pointer w-16 h-16 rounded-md overflow-hidden border-2 transition-colors",
+                "relative shrink-0 cursor-pointer w-16 h-16 rounded-md overflow-hidden border-2 transition-colors",
                 index === activeIndex ? "border-brand" : "border-transparent",
               )}
             >
