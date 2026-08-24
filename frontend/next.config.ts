@@ -1,8 +1,29 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async rewrites() {
+  async headers() {
     return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
+        ],
+      },
+    ];
+  },
+  async rewrites() {
+    const firebaseAuthHost =
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
+      "rocks-hairmpire.firebaseapp.com";
+
+    return [
+      {
+        source: "/__/auth/:path*",
+        destination: `https://${firebaseAuthHost}/__/auth/:path*`,
+      },
       {
         source: "/api/v1/:path*",
         destination: "http://localhost:4000/api/v1/:path*",

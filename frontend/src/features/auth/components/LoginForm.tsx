@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { Sparkles } from "lucide-react";
 import { useSession } from "@/src/features/auth/hooks/useSession";
 import { useGoogleSignIn } from "@/src/features/auth/hooks/useGoogleSignIn";
 import { Button } from "@/src/components/ui/Button";
@@ -24,9 +23,7 @@ export default function LoginPage() {
   }, [isLoading, isAuthenticated, redirect, router]);
 
   function handleSignIn() {
-    signIn.mutate(undefined, {
-      onSuccess: () => router.replace(redirect),
-    });
+    signIn.startGoogleSignIn(redirect);
   }
 
   const LOGO_URL =
@@ -65,14 +62,10 @@ export default function LoginPage() {
             disabled={signIn.isPending}
             className="w-full mt-8"
           >
-            {signIn.isPending ? "Signing in..." : "Continue with Google"}
+            {signIn.isPending
+              ? "Signing in..."
+              : "Continue with Google"}
           </Button>
-
-          {signIn.isError && (
-            <p className="text-error text-sm text-center mt-3">
-              Something went wrong. Please try again.
-            </p>
-          )}
 
           <p className="text-gray-400 text-xs text-center mt-8 leading-relaxed">
             By continuing, you agree to Rockshairmpire's{" "}

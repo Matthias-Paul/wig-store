@@ -131,7 +131,7 @@ export function MobileMenu({
             <button
               onClick={() => {
                 onClose();
-                signIn.mutate();
+                signIn.startGoogleSignIn();
               }}
               className="flex text-brand items-center cursor-pointer justify-center gap-2 w-full px-3 py-2.5 rounded-md border text-sm font-medium"
             >
