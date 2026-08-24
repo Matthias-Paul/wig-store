@@ -34,20 +34,24 @@ export class FcmService {
     let successCount = 0;
     let failureCount = 0;
 
+    // sendEach uses FCM HTTP v1 per token. sendMulticast / sendEachForMulticast
+    // in firebase-admin v10 still POST to https://fcm.googleapis.com/batch,
+    // which Google removed (404 HTML page).
     for (let i = 0; i < uniqueTokens.length; i += MULTICAST_LIMIT) {
       const batch = uniqueTokens.slice(i, i + MULTICAST_LIMIT);
+      const messages: admin.messaging.Message[] = batch.map((token) => ({
+        token,
+        notification: { title, body },
+        data: link ? { link } : undefined,
+        webpush: link
+          ? {
+              fcmOptions: { link },
+            }
+          : undefined,
+      }));
 
       try {
-        const response = await admin.messaging().sendMulticast({
-          tokens: batch,
-          notification: { title, body },
-          data: link ? { link } : undefined,
-          webpush: link
-            ? {
-                fcmOptions: { link },
-              }
-            : undefined,
-        });
+        const response = await admin.messaging().sendEach(messages);
 
         response.responses.forEach((resp, index) => {
           if (resp.success) {
@@ -68,7 +72,7 @@ export class FcmService {
       } catch (error) {
         failureCount += batch.length;
         this.logger.error(
-          'FCM multicast request failed — check FIREBASE_PROJECT_ID matches the web app (rocks-hairmpire) and the service account belongs to that project',
+          'FCM sendEach request failed',
           error instanceof Error ? error.stack : String(error),
         );
       }
