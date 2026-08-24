@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Notification } from './entities/notification.entity';
 import { NotificationType } from 'src/common/enums/notification-type.enum';
 import { DeviceToken } from './entities/device-token.entity';
 import { FcmService } from './fcm.service';
 import { GetNotificationsQueryDto } from './dtos/get-notifications-query.dto';
 
+const MAX_TOKENS_PER_USER = 5;
+
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
+
   constructor(
     @InjectRepository(Notification)
     private notificationRepo: Repository<Notification>,
@@ -49,13 +53,34 @@ export class NotificationsService {
           : process.env.FRONTEND_URL;
           
       if (tokens.length > 0) {
-        await this.fcmService.sendToTokens(
-          tokens,
-          params.title,
-          params.message,
-          link,
-        );
+        void this.dispatchPush(tokens, params.title, params.message, link);
       }
+    }
+  }
+
+  private async dispatchPush(
+    tokens: string[],
+    title: string,
+    message: string,
+    link?: string,
+  ): Promise<void> {
+    try {
+      const { staleTokens } = await this.fcmService.sendToTokens(
+        tokens,
+        title,
+        message,
+        link,
+      );
+
+      if (staleTokens.length > 0) {
+        await this.deviceTokenRepo.delete({ token: In(staleTokens) });
+        this.logger.log(`Removed ${staleTokens.length} stale FCM token(s)`);
+      }
+    } catch (error) {
+      this.logger.error(
+        'Push dispatch failed',
+        error instanceof Error ? error.stack : String(error),
+      );
     }
   }
 
@@ -132,6 +157,37 @@ export class NotificationsService {
       await this.deviceTokenRepo.save(deviceToken);
     }
 
+    await this.pruneExtraTokens(userId, token);
+
     return { message: 'Device registered for push notifications' };
+  }
+
+  private async pruneExtraTokens(
+    userId: string,
+    keepToken: string,
+  ): Promise<void> {
+    const tokens = await this.deviceTokenRepo.find({
+      where: { user: { id: userId } },
+    });
+
+    if (tokens.length <= MAX_TOKENS_PER_USER) return;
+
+    const keep = new Set<string>([keepToken]);
+    const others = tokens
+      .filter((row) => row.token !== keepToken)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    for (const row of others) {
+      if (keep.size >= MAX_TOKENS_PER_USER) break;
+      keep.add(row.token);
+    }
+
+    const stale = tokens.filter((row) => !keep.has(row.token));
+    if (stale.length === 0) return;
+
+    await this.deviceTokenRepo.remove(stale);
+    this.logger.log(
+      `Pruned ${stale.length} extra FCM token(s) for user ${userId}`,
+    );
   }
 }
