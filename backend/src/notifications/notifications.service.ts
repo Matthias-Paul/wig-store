@@ -144,18 +144,16 @@ export class NotificationsService {
   }
 
   async registerDeviceToken(userId: string, token: string) {
-    const existing = await this.deviceTokenRepo.findOne({ where: { token } });
-
-    if (existing) {
-      existing.user = { id: userId } as any;
-      await this.deviceTokenRepo.save(existing);
-    } else {
-      const deviceToken = this.deviceTokenRepo.create({
-        user: { id: userId } as any,
-        token,
-      });
-      await this.deviceTokenRepo.save(deviceToken);
-    }
+    // Login + session both POST the same FCM token at once. A find-then-insert
+    // loses that race and hits UQ_... on token. Upsert is safe to retry.
+    await this.deviceTokenRepo.query(
+      `
+      INSERT INTO device_tokens (token, user_id)
+      VALUES ($1, $2)
+      ON CONFLICT (token) DO UPDATE SET user_id = EXCLUDED.user_id
+      `,
+      [token, userId],
+    );
 
     await this.pruneExtraTokens(userId, token);
 
