@@ -119,6 +119,29 @@ export class EmailService {
     `;
   }
 
+  private buildTotalsTable(order: Order): string {
+    const deliveryFee = Number(order.deliveryFee) || 0;
+    const total = Number(order.totalAmount) || 0;
+    const subtotal = total - deliveryFee;
+
+    return `
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
+        <tr>
+          <td style="font-size:13px; color:#888888; padding:4px 8px 4px 0;">Subtotal</td>
+          <td style="font-size:13px; color:#222222; text-align:right; padding:4px 0 4px 8px;">₦${subtotal.toLocaleString()}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px; color:#888888; padding:4px 8px 4px 0;">Delivery fee</td>
+          <td style="font-size:13px; color:#222222; text-align:right; padding:4px 0 4px 8px;">₦${deliveryFee.toLocaleString()}</td>
+        </tr>
+        <tr>
+          <td style="font-size:15px; color:#222222; font-weight:bold; padding:8px 8px 4px 0;">Total</td>
+          <td style="font-size:15px; color:#222222; font-weight:bold; text-align:right; padding:8px 0 4px 8px;">₦${total.toLocaleString()}</td>
+        </tr>
+      </table>
+    `;
+  }
+
   async sendOrderConfirmation(order: Order): Promise<void> {
     const content = `
       <h2 style="color:#222222; font-size:20px; margin:0 0 6px 0;">Thanks for your order, ${order.recipientName}</h2>
@@ -132,13 +155,7 @@ export class EmailService {
       </tr>
     </table>
       ${this.buildItemsTable(order)}
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
-        <tr>
-          <td style="font-size:15px; color:#222222; font-weight:bold; text-align:right;">
-            Total: ₦${Number(order.totalAmount).toLocaleString()}
-          </td>
-        </tr>
-      </table>
+      ${this.buildTotalsTable(order)}
       <div style="margin-top:24px; padding:16px; background-color:#faf5fa; border-radius:6px;">
         <p style="margin:0 0 4px 0; font-size:13px; color:${BRAND_COLOR}; font-weight:bold;">Delivery Address</p>
         <p style="margin:0; font-size:14px; color:#333333; line-height:1.5;">
@@ -214,13 +231,7 @@ export class EmailService {
         <tr><td style="font-size:13px; color:#888888; padding:2px 0;">Email</td><td style="font-size:13px; color:#222222; text-align:right;">${order.recipientEmail}</td></tr>
       </table>
       ${this.buildItemsTable(order)}
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
-        <tr>
-          <td style="font-size:15px; color:#222222; font-weight:bold; text-align:right;">
-            Total: ₦${Number(order.totalAmount).toLocaleString()}
-          </td>
-        </tr>
-      </table>
+      ${this.buildTotalsTable(order)}
       <div style="margin-top:24px; padding:16px; background-color:#faf5fa; border-radius:6px;">
         <p style="margin:0 0 4px 0; font-size:13px; color:${BRAND_COLOR}; font-weight:bold;">Ship To</p>
         <p style="margin:0; font-size:14px; color:#333333; line-height:1.5;">

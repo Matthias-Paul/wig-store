@@ -26,15 +26,23 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
 
+  const corsOrigins = [
+    'http://localhost:3000',
+    'http://localhost:4000',
+    process.env.FRONTEND_URL,
+    'https://www.rocks-hairmpire.com',
+  ]
+    .filter((origin): origin is string => Boolean(origin))
+    .map((origin) => origin.replace(/\/$/, ''));
+
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:4000',
-      'https://wig-store-1.onrender.com/',
-      'https://www.rocks-hairmpire.com',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    origin: corsOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE',   'PATCH', 'OPTIONS'],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
   app.useGlobalPipes(
     new ValidationPipe({
