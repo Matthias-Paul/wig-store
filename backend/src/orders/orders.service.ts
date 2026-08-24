@@ -301,7 +301,7 @@ export class OrdersService {
     ];
 
     if (CUSTOMER_NOTIFIABLE_STATUSES.includes(newStatus)) {
-      this.eventEmitter.emit('order.status_updated', updatedOrder, newStatus);
+      this.eventEmitter.emit('order.status_updated', updatedOrder);
     }
 
     return updatedOrder;

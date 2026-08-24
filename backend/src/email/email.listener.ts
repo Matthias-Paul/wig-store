@@ -20,8 +20,8 @@ export class EmailListener {
   }
 
   @OnEvent('order.status_updated')
-  async handleStatusUpdated(order: Order, status: string) {
-    await this.emailService.sendOrderStatusUpdate(order, status);
+  async handleStatusUpdated(order: Order) {
+    await this.emailService.sendOrderStatusUpdate(order, order.status);
   }
 
   @OnEvent('user.registered')

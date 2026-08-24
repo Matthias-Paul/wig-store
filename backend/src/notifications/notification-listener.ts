@@ -46,7 +46,8 @@ export class NotificationsListener {
     });
   }
   @OnEvent('order.status_updated')
-  async handleStatusUpdated(order: Order, status: string) {
+  async handleStatusUpdated(order: Order) {
+    const status = order.status;
     const typeMap: Record<string, NotificationType> = {
       processing: NotificationType.ORDER_PROCESSING,
       shipped: NotificationType.ORDER_SHIPPED,
@@ -67,8 +68,7 @@ export class NotificationsListener {
       delivered: `Your order #${order.orderNumber} has been delivered successfully. We hope you enjoy your purchase. Thank you for shopping with us!`,
     };
 
-    // Ignore statuses that don't have a notification type
-    if (!typeMap[status]) return;
+    if (!typeMap[status] || !order.user?.id) return;
 
     await this.notificationsService.create({
       userId: order.user.id,
