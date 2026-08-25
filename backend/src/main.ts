@@ -39,7 +39,7 @@ async function bootstrap() {
     origin: corsOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE',   'PATCH', 'OPTIONS'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Guest-Id'],
     exposedHeaders: ['Content-Type', 'Authorization'],
     preflightContinue: false,
     optionsSuccessStatus: 204,

@@ -19,7 +19,7 @@ export function MobileMenu({
 }) {
   const { user, isAuthenticated } = useSession();
   const logout = useLogout();
-  const signIn = useGoogleSignIn();
+  const { triggerSignIn } = useGoogleSignIn();
   const { isAuthorized } = useRequireAdmin();
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export function MobileMenu({
             href="/"
             onClick={onClose}
             className="block px-3 py-2.5 rounded-md text-gray-700 hover:bg-gray-50"
-          >
+          > 
             Home
           </Link>
           <Link
@@ -131,7 +131,7 @@ export function MobileMenu({
             <button
               onClick={() => {
                 onClose();
-                signIn.startGoogleSignIn();
+                triggerSignIn("/");
               }}
               className="flex text-brand items-center cursor-pointer justify-center gap-2 w-full px-3 py-2.5 rounded-md border text-sm font-medium"
             >

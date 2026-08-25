@@ -1,9 +1,10 @@
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import {Providers} from "./providers"
+import { Providers } from "./providers";
 import { Toaster } from "sonner";
 import { CartDrawerProvider } from "../features/cart/CartDrawerContext";
 import { WhatsAppButton } from "../components/layout/WhatsAppButton";
+import { RedirectResultHandler } from "@/src/features/auth/components/RedirectResultHandler";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -16,6 +17,7 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
+
 export default function RootLayout({
   children,
 }: {
@@ -26,6 +28,7 @@ export default function RootLayout({
       <body className={`${playfair.variable} ${inter.variable} font-sans`}>
         <Providers>
           <CartDrawerProvider>
+            <RedirectResultHandler />
             {children}
             <Toaster
               position="top-center"

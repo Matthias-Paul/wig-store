@@ -14,7 +14,7 @@ export default function LoginPage() {
   const redirect = searchParams.get("redirect") || "/";
 
   const { isAuthenticated, isLoading } = useSession();
-  const signIn = useGoogleSignIn();
+  const { triggerSignIn } = useGoogleSignIn();
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -23,7 +23,7 @@ export default function LoginPage() {
   }, [isLoading, isAuthenticated, redirect, router]);
 
   function handleSignIn() {
-    signIn.startGoogleSignIn(redirect);
+    triggerSignIn(redirect);
   }
 
   const LOGO_URL =
@@ -59,12 +59,9 @@ export default function LoginPage() {
             size="lg"
             icon={<GoogleIcon />}
             onClick={handleSignIn}
-            disabled={signIn.isPending}
             className="w-full mt-8"
           >
-            {signIn.isPending
-              ? "Signing in..."
-              : "Continue with Google"}
+            Continue with Google
           </Button>
 
           <p className="text-gray-400 text-xs text-center mt-8 leading-relaxed">

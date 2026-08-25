@@ -1,43 +1,24 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signInWithPopup } from "firebase/auth";
-import { useQueryClient } from "@tanstack/react-query";
+import { signInWithRedirect } from "firebase/auth";
 import { toast } from "sonner";
 import { auth, googleProvider } from "@/src/lib/firebase";
 import {
-  completeGoogleSessionFromUser,
-  GOOGLE_AUTH_PENDING_KEY,
-  POST_LOGIN_REDIRECT_KEY,
-} from "@/src/lib/googleAuth";
+  GOOGLE_NETWORK_TOAST,
+  isGoogleNetworkError,
+} from "@/src/features/auth/lib/googleAuthErrors";
 
 export function useGoogleSignIn() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const [isPending, setIsPending] = useState(false);
-
-  async function startGoogleSignIn(redirectTo?: string) {
-    const next =
-      redirectTo || window.location.pathname + window.location.search;
-
-    sessionStorage.setItem(POST_LOGIN_REDIRECT_KEY, next);
-    sessionStorage.removeItem(GOOGLE_AUTH_PENDING_KEY);
-    setIsPending(true);
-
-    try {
-      const credential = await signInWithPopup(auth, googleProvider);
-      const data = await completeGoogleSessionFromUser(credential.user);
-
-      queryClient.setQueryData(["session"], data.user);
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
-      sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
-      router.replace(next);
-    } catch (error) {
+  function triggerSignIn(redirectTo: string = "/") {
+    // Persist where the user was trying to go, since the whole page will navigate away
+    sessionStorage.setItem("postLoginRedirect", redirectTo);
+    signInWithRedirect(auth, googleProvider).catch((error) => {
       console.error("Google sign-in failed", error);
-      toast.error("Sign-in failed. Please try again.");
-    } finally {
-      setIsPending(false);
-    }
+      toast.error(
+        isGoogleNetworkError(error)
+          ? GOOGLE_NETWORK_TOAST
+          : "Sign-in failed. Please try again.",
+      );
+    });
   }
 
-  return { startGoogleSignIn, isPending };
+  return { triggerSignIn };
 }
