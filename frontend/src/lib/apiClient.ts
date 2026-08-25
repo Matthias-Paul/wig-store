@@ -1,17 +1,9 @@
 const PRODUCTION_API = "https://wig-store-1.onrender.com/api/v1";
 
 function getBaseUrl() {
+  // Optional: set NEXT_PUBLIC_API_BASE_URL=/api/v1 when running Nest locally on :4000
   if (process.env.NEXT_PUBLIC_API_BASE_URL) {
     return process.env.NEXT_PUBLIC_API_BASE_URL.replace(/\/$/, "");
-  }
-
-  // Local Next rewrite → localhost:4000 so auth cookies stay same-origin.
-  if (
-    typeof window !== "undefined" &&
-    (window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1")
-  ) {
-    return "/api/v1";
   }
 
   return PRODUCTION_API;

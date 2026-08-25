@@ -5,7 +5,7 @@ import { Button } from "@/src/components/ui/Button";
 import { GoogleIcon } from "@/src/components/ui/icons/GoogleIcon";
 
 export function GoogleSignInButton() {
-  const { triggerSignIn } = useGoogleSignIn();
+  const { triggerSignIn, isPending } = useGoogleSignIn();
 
   return (
     <Button
@@ -13,8 +13,9 @@ export function GoogleSignInButton() {
       size="sm"
       icon={<GoogleIcon size={16} />}
       onClick={() => triggerSignIn("/")}
+      disabled={isPending}
     >
-      Sign in with Google
+      {isPending ? "Signing in..." : "Sign in with Google"}
     </Button>
   );
 }

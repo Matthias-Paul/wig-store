@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { signOut } from 'firebase/auth';
 import { apiFetch } from '@/src/lib/apiClient';
 import { auth } from '@/src/lib/firebase';
-import { resetGoogleLoginState } from '@/src/lib/googleAuth';
 import { toast } from 'sonner';
 
 export function useLogout() {
@@ -18,7 +17,6 @@ export function useLogout() {
     onSuccess: () => {
       queryClient.setQueryData(['session'], null);
       queryClient.clear(); // wipe everything cached — cart, orders, notifications, all tied to the now-logged-out user
-      resetGoogleLoginState();
       toast.info("Logged out successfully");
       window.location.href = "/";
 

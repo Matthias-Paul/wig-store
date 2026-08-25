@@ -19,7 +19,7 @@ export function MobileMenu({
 }) {
   const { user, isAuthenticated } = useSession();
   const logout = useLogout();
-  const { triggerSignIn } = useGoogleSignIn();
+  const { triggerSignIn, isPending } = useGoogleSignIn();
   const { isAuthorized } = useRequireAdmin();
 
   useEffect(() => {
@@ -133,9 +133,11 @@ export function MobileMenu({
                 onClose();
                 triggerSignIn("/");
               }}
+              disabled={isPending}
               className="flex text-brand items-center cursor-pointer justify-center gap-2 w-full px-3 py-2.5 rounded-md border text-sm font-medium"
             >
-              <GoogleIcon size={16} /> Sign in with Google
+              <GoogleIcon size={16} />{" "}
+              {isPending ? "Signing in..." : "Sign in with Google"}
             </button>
           )}
         </div>
