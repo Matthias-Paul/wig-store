@@ -6,7 +6,7 @@ import { Order } from '../orders/entities/order.entity';
 
 const BRAND_COLOR = '#7E297E';
 const LOGO_URL =
-  'https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg';
+  'https://res.cloudinary.com/drkxtuaeg/image/upload/v1787745248/jflicf1ob69wl42freyd.jpg';
 const BRAND_NAME = 'Rocks Hairmpire';
 
 @Injectable()

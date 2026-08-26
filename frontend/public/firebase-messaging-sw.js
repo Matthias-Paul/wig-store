@@ -20,9 +20,9 @@ messaging.onBackgroundMessage((payload) => {
 
   self.registration.showNotification(payload.notification.title, {
     body: payload.notification.body,
-    icon: "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg",
+    icon: "https://res.cloudinary.com/drkxtuaeg/image/upload/v1787745248/jflicf1ob69wl42freyd.jpg",
     badge:
-      "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg",
+      "https://res.cloudinary.com/drkxtuaeg/image/upload/v1787745248/jflicf1ob69wl42freyd.jpg",
     data: { link },
     actions: [{ action: "view", title: "View on Site" }],
   });

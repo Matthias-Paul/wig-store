@@ -14,7 +14,7 @@ import { NavLink } from "./NavLink";
 import { MobileMenu } from "./MobileMenu";
 
 const LOGO_URL =
-  "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg";
+  "https://res.cloudinary.com/drkxtuaeg/image/upload/v1787745248/jflicf1ob69wl42freyd.jpg";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

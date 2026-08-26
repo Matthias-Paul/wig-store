@@ -27,7 +27,7 @@ export default function LoginPage() {
   }
 
   const LOGO_URL =
-    "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg";
+    "https://res.cloudinary.com/drkxtuaeg/image/upload/v1787745248/jflicf1ob69wl42freyd.jpg";
 
   return (
     <div className="min-h-screen grid md:grid-cols-2">

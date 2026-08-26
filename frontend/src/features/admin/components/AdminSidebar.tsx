@@ -7,7 +7,7 @@ import { clsx } from "clsx";
 import { ADMIN_NAV_ITEMS } from "../adminNavConfig";
 
 const LOGO_URL =
-  "https://res.cloudinary.com/drkxtuaeg/image/upload/v1785842112/lxvaiiwhocdppargd5bc.jpg";
+  "https://res.cloudinary.com/drkxtuaeg/image/upload/v1787745248/jflicf1ob69wl42freyd.jpg";
 
 export function AdminSidebar() {
   const pathname = usePathname();
