@@ -47,7 +47,7 @@ export class VariantsService {
 
     if (existingVariant) {
       throw new ConflictException(
-        `This product already has a ${dto.length}-inch, ${dto.color}${dto.closureSize ? `, ${dto.closureSize}` : ''} variant.`,
+        `This product already has a ${dto.length}, ${dto.color}${dto.closureSize ? `, ${dto.closureSize}` : ''} variant.`,
       );
     }
 
@@ -157,7 +157,7 @@ export class VariantsService {
 
       if (duplicate && duplicate.id !== variant.id) {
         throw new ConflictException(
-          `This product already has a ${newLength}-inch, ${newColor}${newClosureSize ? `, ${newClosureSize}` : ''} variant.`,
+          `This product already has a ${newLength}, ${newColor}${newClosureSize ? `, ${newClosureSize}` : ''} variant.`,
         );
       }
     }

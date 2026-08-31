@@ -1,6 +1,6 @@
 export interface CartItemVariant {
   id: string;
-  length: number;
+  length: string;
   color: string;
   laceType?: string | null;
   closureSize?: string | null;

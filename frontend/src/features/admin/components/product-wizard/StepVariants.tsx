@@ -15,11 +15,15 @@ import { Input } from "@/src/components/ui/Input";
 import { Button } from "@/src/components/ui/Button";
 import { Badge } from "@/src/components/ui/Badge";
 import { Skeleton } from "@/src/components/ui/Skeleton";
+import {
+  formatVariantLength,
+  isAccessoriesAndKitsCategory,
+} from "@/src/lib/formatVariantLength";
 
 const LACE_REQUIRED_SLUGS = ["luxury-hairs", "hair-bundles"];
 
 const variantSchema = z.object({
-  length: z.number().min(1, "Length is required"),
+  length: z.string().min(1, "Length is required").max(50),
   color: z.string().min(1, "Color is required"),
   laceType: z.string().optional(),
   closureSize: z.string().optional(),
@@ -56,11 +60,14 @@ export function StepVariants({
   const laceRequired = product
     ? LACE_REQUIRED_SLUGS.includes(product.category.slug)
     : false;
+  const isKitsCategory = product
+    ? isAccessoriesAndKitsCategory(product.category.slug)
+    : false;
 
   function openAddForm() {
     setEditingVariantId(null);
     reset({
-      length: undefined,
+      length: "",
       color: "",
       laceType: "",
       closureSize: "",
@@ -135,9 +142,9 @@ export function StepVariants({
         >
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Length (inches)"
-              type="number"
-              {...register("length", { valueAsNumber: true })}
+              label={isKitsCategory ? "Length" : "Length (inches)"}
+              placeholder={isKitsCategory ? "e.g. none" : "e.g. 14"}
+              {...register("length")}
               error={errors.length?.message}
             />
             <Input
@@ -210,7 +217,11 @@ export function StepVariants({
             >
               <div>
                 <p className="text-sm font-medium text-gray-900">
-                  {variant.length}" · {variant.color}
+                  {formatVariantLength(
+                    variant.length,
+                    product.category.slug,
+                  )}{" "}
+                  · {variant.color}
                   {variant.laceType && ` · ${variant.laceType}`}
                   {variant.closureSize && ` · ${variant.closureSize}`}
                 </p>

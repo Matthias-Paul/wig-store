@@ -87,7 +87,7 @@ export class OrdersService {
 
         if (result.affected === 0) {
           throw new ConflictException(
-            `"${cartItem.variant.product.name}" (${cartItem.variant.length}-inch ) no longer has enough stock. Please update your cart.`,
+            `"${cartItem.variant.product.name}" (${cartItem.variant.length}) no longer has enough stock. Please update your cart.`,
           );
         }
 

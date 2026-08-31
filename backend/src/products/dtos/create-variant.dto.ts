@@ -9,9 +9,10 @@ import {
 } from 'class-validator';
 
 export class CreateVariantDto {
-  @IsInt()
-  @Min(1)
-  length: number;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  length: string;
 
   @IsString()
   @IsNotEmpty()

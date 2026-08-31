@@ -24,8 +24,8 @@ export class ProductVariant {
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
-  @Column({ type: 'int' })
-  length: number; // in inches
+  @Column({ type: 'varchar', length: 50 })
+  length: string;
 
   @Column()
   color: string;

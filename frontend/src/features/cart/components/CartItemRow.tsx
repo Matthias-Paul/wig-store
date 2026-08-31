@@ -7,6 +7,7 @@ import { useRemoveCartItem } from "../hooks/useRemoveCartItem";
 import { parseProductImages } from "@/src/lib/parseProductImages";
 import type { CartItem } from "@/src/types/cart";
 import { Spinner } from "@/src/components/ui/Spinner";
+import { formatVariantLength } from "@/src/lib/formatVariantLength";
 
 export function CartItemRow({ item }: { item: CartItem }) {
   const updateItem = useUpdateCartItem();
@@ -37,7 +38,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
           {item.variant.product.name}
         </p>
         <p className="text-xs text-gray-500">
-          {item.variant.length}" · {item?.variant?.color}
+          {formatVariantLength(item.variant.length)} · {item?.variant?.color}
         </p>
 
         <div className="flex items-center gap-2 mt-1">

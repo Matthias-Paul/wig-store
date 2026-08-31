@@ -11,6 +11,7 @@ import { Button } from "@/src/components/ui/Button";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { parseProductImages } from "@/src/lib/parseProductImages";
+import { formatVariantLength } from "@/src/lib/formatVariantLength";
 
 const RETRYABLE_STATUSES = ["pending_payment", "payment_failed"];
 
@@ -182,7 +183,8 @@ export default function OrderDetailPage() {
                     {item.variant.product.name}
                   </p>
                   <p className="text-xs text-gray-500 mt-0.5">
-                    {item.variant.length}" · {item.variant.color}
+                    {formatVariantLength(item.variant.length)} ·{" "}
+                    {item.variant.color}
                     {item.variant.closureSize &&
                       ` · ${item.variant.closureSize}`}
                   </p>

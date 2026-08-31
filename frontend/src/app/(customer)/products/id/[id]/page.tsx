@@ -113,6 +113,7 @@ export default function ProductDetailPage() {
                 variants={product.variants}
                 selectedVariantId={selectedVariant?.id ?? null}
                 onSelect={handleSelectVariant}
+                categorySlug={product.category.slug}
               />
             )}
           </div>

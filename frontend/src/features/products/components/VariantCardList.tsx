@@ -2,17 +2,20 @@
 
 import { clsx } from "clsx";
 import type { ProductVariant } from "@/src/types/product";
+import { formatVariantLength } from "@/src/lib/formatVariantLength";
 
 interface VariantCardListProps {
   variants: ProductVariant[];
   selectedVariantId: string | null;
   onSelect: (variant: ProductVariant) => void;
+  categorySlug?: string;
 }
 
 export function VariantCardList({
   variants,
   selectedVariantId,
   onSelect,
+  categorySlug,
 }: VariantCardListProps) {
   return (
     <div className="space-y-2.5">
@@ -54,7 +57,8 @@ export function VariantCardList({
 
                 <div className="min-w-0">
                   <p className="text-sm  font-medium text-gray-900 flex">
-                    {variant.length}" · {variant.color}
+                    {formatVariantLength(variant.length, categorySlug)} ·{" "}
+                    {variant.color}
                     {variant.laceType && ` · ${variant.laceType}`}
                     {variant.closureSize && ` · ${variant.closureSize}`}
                   </p>

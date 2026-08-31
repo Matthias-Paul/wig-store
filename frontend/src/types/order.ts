@@ -4,7 +4,7 @@ export interface OrderItem {
   priceAtPurchase: number;
   variant: {
     id: string;
-    length: number;
+    length: string;
     color: string;
     laceType?: string | null;
     closureSize?: string | null;

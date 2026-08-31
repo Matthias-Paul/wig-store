@@ -10,6 +10,7 @@ import { OrderStatusSelect } from "@/src/features/admin/components/OrderStatusSe
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { parseProductImages } from "@/src/lib/parseProductImages";
+import { formatVariantLength } from "@/src/lib/formatVariantLength";
 
 export default function AdminOrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -81,7 +82,8 @@ export default function AdminOrderDetailPage() {
                         {item.variant.product.name}
                       </p>
                       <p className="text-xs text-gray-500 mt-0.5">
-                        {item.variant.length}" · {item.variant.color}
+                        {formatVariantLength(item.variant.length)} ·{" "}
+                        {item.variant.color}
                         {item.variant.closureSize &&
                           ` · ${item.variant.closureSize}`}
                       </p>

@@ -6,7 +6,7 @@ export interface CreateProductPayload {
 }
 
 export interface CreateVariantPayload {
-  length: number;
+  length: string;
   color: string;
   laceType?: string;
   closureSize?: string;
