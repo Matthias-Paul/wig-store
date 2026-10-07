@@ -7,7 +7,7 @@ export default registerAs('auth', () => {
   if (!accessSecret || !refreshSecret) {
     throw new Error('JWT secrets are not defined in environment variables');
   }
-
+  
   return {
     secret: accessSecret,
     refreshSecret,

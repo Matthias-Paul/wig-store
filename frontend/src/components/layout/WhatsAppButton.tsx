@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { MessageCircle } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 const WHATSAPP_LINK = process.env.NEXT_PUBLIC_WHATSAPP_LINK;
 
@@ -22,7 +22,7 @@ export function WhatsAppButton() {
     >
       <span className="absolute inset-0 rounded-full bg-success animate-ping opacity-30" />
       <span className="relative flex items-center justify-center h-11 w-11 sm:h-14 sm:w-14 rounded-full bg-success text-white shadow-lg shadow-success/30 hover:scale-105 transition-transform">
-        <MessageCircle size={26} fill="currentColor" strokeWidth={0} />
+        <FaWhatsapp className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
       </span>
 
       {/* Tooltip on hover, desktop only */}

@@ -3,8 +3,7 @@ import Link from 'next/link';
 import {  Mail, Phone, MapPin } from 'lucide-react';
 // import { Input } from '@/src/components/ui/Input';
 // import { Button } from '@/src/components/ui/Button';
-import { FaFacebook, FaInstagram } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa";
 
 export function Footer() {
   return (
@@ -47,7 +46,7 @@ export function Footer() {
             </p>
             <div className="flex gap-3 mt-4">
               <a
-                href="#"
+                href="https://www.instagram.com/rockshairmpire"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -56,7 +55,7 @@ export function Footer() {
                 <FaInstagram size={16} />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/share/1CQHSj8XZJ/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -65,13 +64,13 @@ export function Footer() {
                 <FaFacebook size={16} />
               </a>
               <a
-                href="#"
+                href="https://www.tiktok.com/@rockshairmpire"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Twitter"
+                aria-label="TikTok"
                 className="h-9 w-9 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand transition-colors"
               >
-                <FaXTwitter size={16} />
+                <FaTiktok size={16} />
               </a>
             </div>
           </div>
