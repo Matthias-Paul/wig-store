@@ -1,9 +1,10 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { usePaymentStatusPolling } from "@/src/features/orders/hooks/usePaymentStatusPolling";
 import { Button } from "@/src/components/ui/Button";
+import { Skeleton } from "@/src/components/ui/Skeleton";
 import { useEffect, useState } from "react";
 
 export default function OrderConfirmationContent() {
@@ -26,14 +27,15 @@ export default function OrderConfirmationContent() {
 
   if (!orderId || isLoading || !status || status === "pending_payment") {
     return (
-      <div className="max-w-md mx-auto p-8 text-center">
-        <Loader2 className="animate-spin mx-auto text-brand" size={40} />
-        <h1 className="font-heading text-xl mt-4">
-          Confirming your payment...
-        </h1>
-        <p className="text-gray-500 text-sm mt-2">
-          This usually only takes a few seconds.
-        </p>
+      <div className="max-w-md mx-auto p-8 space-y-4">
+        <Skeleton className="h-12 w-12 rounded-full mx-auto" />
+        <Skeleton className="h-7 w-2/3 mx-auto" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6 mx-auto" />
+        <div className="flex gap-3 justify-center pt-2">
+          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-10 w-36" />
+        </div>
       </div>
     );
   }

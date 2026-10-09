@@ -15,7 +15,6 @@ export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useMyNotifications(page);
   const markRead = useMarkNotificationRead();
-  console.log(data)
 
   if (authLoading || !isAuthenticated) {
     return (

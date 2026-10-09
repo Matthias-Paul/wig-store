@@ -78,6 +78,13 @@ export function MobileMenu({
           >
             Shop
           </Link>
+          <Link
+            href="/about"
+            onClick={onClose}
+            className="block px-3 py-2.5 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            About
+          </Link>
 
           {isAuthenticated && (
             <>

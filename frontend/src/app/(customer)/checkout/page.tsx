@@ -158,7 +158,7 @@ export default function CheckoutPage() {
             {!selectedState ? (
               <span className="text-gray-400">Select a state</span>
             ) : feeLoading ? (
-              <span className="text-gray-400">Calculating...</span>
+              <Skeleton className="h-4 w-16" />
             ) : feeError ? (
               <span className="text-error text-xs">{feeErrorObj?.message}</span>
             ) : (

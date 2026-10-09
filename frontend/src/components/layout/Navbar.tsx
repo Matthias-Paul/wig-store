@@ -47,6 +47,7 @@ export function Navbar() {
           <nav className="hidden md:flex items-center gap-8">
             <NavLink href="/">Home</NavLink>
             <NavLink href="/products">Shop</NavLink>
+            <NavLink href="/about">About</NavLink>
           </nav>
 
           {/* Right — icons + auth */}
