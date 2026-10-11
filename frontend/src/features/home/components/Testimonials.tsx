@@ -6,27 +6,27 @@ import { clsx } from "clsx";
 
 const REVIEWS = [
   {
-    name: "Amaka Okafor",
-    initials: "AO",
-    text: "The quality is unmatched. My bundle still looks brand new after months of wear. Definitely ordering again — this is now my go-to store.",
+    name: "Tiara",
+    initials: "T",
+    text: "The hair is even more gorgeous physically, the texture is very pleasing. The delivery was swift too, Rocks hairmpire is my go to store henceforth.",
     rating: 5,
   },
   {
-    name: "Chidinma Eze",
-    initials: "CE",
-    text: "Fast delivery and the hair feels so natural on. Customer service was also super helpful when I had questions about my order.",
+    name: "Elizabeth",
+    initials: "E",
+    text: "My hair? Yes, one of the best purchases I've made, ever. Everyone kept giving me beautiful compliments. The hair is gorgeous, breathable, and exactly what I ordered. The packaging too, it was mind blowing, I could keep buying hairs every day just because of the beautiful packaging. The hair was nothing short of expectations, thank youuu!!",
     rating: 5,
   },
   {
-    name: "Funmi Adeyemi",
-    initials: "FA",
-    text: "Exactly as pictured, maybe even better in person. The closure blended perfectly with my hairline — I've gotten so many compliments.",
+    name: "Omolara",
+    initials: "O",
+    text: "The wig arrived beautifully packaged and styled. Wore it for an event and got compliments all day, the hair boosted my confidence and made me feel seen. Highly recommend!",
     rating: 5,
   },
   {
-    name: "Ngozi Uche",
-    initials: "NU",
-    text: "I was nervous ordering hair online but this exceeded expectations. Rich, full, and it takes color beautifully. Highly recommend.",
+    name: "Bukola",
+    initials: "B",
+    text: "I absolutely love my hair! It turned out even more beautiful in person. The quality, attention to detail, and overall finish exceeded my expectations. Thank you so much for delivering such an amazing experience. May God continue to bless you and prosper the work of your hands!",
     rating: 5,
   },
 ];
@@ -91,12 +91,12 @@ export function Testimonials() {
           >
             {REVIEWS.map((review) => (
               <div key={review.name} className="w-full flex-shrink-0 px-2">
-                <div className="bg-white rounded-2xl p-8 md:p-10 border border-gray-100 shadow-sm text-center relative">
+                <div className="bg-white rounded-2xl p-8 md:p-10 border border-gray-100 shadow-sm text-center relative flex flex-col h-[340px] md:h-[320px]">
                   <Quote
                     className="text-brand/10 absolute top-6 left-1/2 -translate-x-1/2"
                     size={44}
                   />
-                  <div className="relative flex gap-0.5 justify-center text-gold mb-4">
+                  <div className="relative flex gap-0.5 justify-center text-gold mb-4 shrink-0">
                     {[...Array(review.rating)].map((_, i) => (
                       <Star
                         key={i}
@@ -106,10 +106,12 @@ export function Testimonials() {
                       />
                     ))}
                   </div>
-                  <p className="relative text-gray-700 leading-relaxed text-sm md:text-base">
-                    "{review.text}"
-                  </p>
-                  <div className="flex items-center justify-center gap-2.5 mt-6">
+                  <div className="relative flex-1 flex items-center justify-center min-h-0">
+                    <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                      "{review.text}"
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center gap-2.5 mt-6 shrink-0">
                     <div className="h-10 w-10 rounded-full bg-brand-tint text-brand flex items-center justify-center text-xs font-semibold">
                       {review.initials}
                     </div>
