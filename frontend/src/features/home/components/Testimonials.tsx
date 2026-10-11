@@ -14,7 +14,7 @@ const REVIEWS = [
   {
     name: "Elizabeth",
     initials: "E",
-    text: "My hair? Yes, one of the best purchases I've made, ever. Everyone kept giving me beautiful compliments. The hair is gorgeous, breathable, and exactly what I ordered. The packaging too, it was mind blowing, I could keep buying hairs every day just because of the beautiful packaging. The hair was nothing short of expectations, thank youuu!!",
+    text: "My hair? Yes, one of the best purchases I've made, ever. Everyone kept giving me beautiful compliments. The hair is gorgeous, breathable, and exactly what I ordered. The packaging too, it was mind blowing, I could keep buying hairs every day just because of the beautiful packaging. The hair was nothing short of expectations, thank you!",
     rating: 5,
   },
   {
