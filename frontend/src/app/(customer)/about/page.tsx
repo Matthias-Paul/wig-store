@@ -71,7 +71,7 @@ export default function AboutPage() {
           <h2 className="font-heading text-2xl md:text-3xl text-gray-900">
             Welcome to Rocks Hairmpire
           </h2>
-          <div className="mt-5 space-y-4 text-gray-600 leading-relaxed text-left">
+          <div className="mt-5 space-y-4 text-gray-600 leading-relaxed text-justify">
             <p>
               Founded in 2021 by Damilola Janet Adesina, our company recognized
               a distinct gap in the market for affordable, premium, and luxury
@@ -121,11 +121,11 @@ export default function AboutPage() {
                       <span className="mt-2 w-px flex-1 bg-brand/20" />
                     )}
                   </div>
-                  <div className="pt-1">
+                  <div className="pt-1 min-w-0 flex-1">
                     <h3 className="font-heading text-xl text-gray-900">
                       {step.title}
                     </h3>
-                    <p className="mt-3 text-gray-600 leading-relaxed">
+                    <p className="mt-3 text-gray-600 leading-relaxed text-justify">
                       {step.body}
                     </p>
                   </div>
@@ -142,7 +142,7 @@ export default function AboutPage() {
           <h2 className="font-heading text-2xl md:text-3xl text-gray-900">
             Why Choose Rocks Hairmpire?
           </h2>
-          <p className="mt-4 text-gray-600 leading-relaxed">
+          <p className="mt-4 text-gray-600 leading-relaxed text-justify">
             At Rocks Hairmpire, we believe that the right hair can enhance your
             look, transform moments, build confidence, and create unforgettable
             memories. That&apos;s why we carefully source every strand to ensure
@@ -157,7 +157,7 @@ export default function AboutPage() {
               className="rounded-2xl border border-brand/10 bg-brand-tint/40 p-6 md:p-8 h-full"
             >
               <h3 className="font-heading text-lg text-brand">{point.title}</h3>
-              <p className="mt-2 text-sm md:text-base text-gray-600 leading-relaxed">
+              <p className="mt-2 text-sm md:text-base text-gray-600 leading-relaxed text-justify">
                 {point.body}
               </p>
             </div>
@@ -177,12 +177,12 @@ export default function AboutPage() {
             <h2 className="font-heading text-2xl md:text-3xl text-white">
               Our Mission
             </h2>
-            <p className="mt-5 text-white/85 leading-relaxed">
+            <p className="mt-5 text-white/85 leading-relaxed text-justify">
               Our mission is simple: meeting every woman&apos;s hair needs
               within Nigeria and beyond, enhancing everyday looks with hair that
               inspires, uplifts, and builds confidence.
             </p>
-            <p className="mt-4 text-white/75 leading-relaxed">
+            <p className="mt-4 text-white/75 leading-relaxed text-justify">
               Whether you&apos;re looking for luxury human hair, affordable hair
               blends, hair bundles, or wigs—or hair accessories and kits for
               personal use or profitable hair supplies—Rocks Hairmpire is here
