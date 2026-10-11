@@ -68,7 +68,7 @@ export default function AboutPage() {
       {/* Welcome */}
       <section className="mx-auto max-w-3xl px-4 py-14 md:py-16">
         <h2 className="font-heading text-2xl md:text-3xl text-gray-900">
-          Welcome to Rocks Hairmpire Enterprises
+          Welcome to Rocks Hairmpire
         </h2>
         <div className="mt-5 space-y-4 text-gray-600 leading-relaxed">
           <p>
