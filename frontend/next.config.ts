@@ -19,22 +19,23 @@ const nextConfig: NextConfig = {
       process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
       "rocks-hairmpire.firebaseapp.com";
 
-    const rewrites = [
+    // Browser calls same-origin /api/v1 → Nest (avoids third-party cookies on iOS)
+    const apiProxyTarget =
+      process.env.API_PROXY_TARGET ||
+      (process.env.NODE_ENV === "development"
+        ? "http://localhost:4000"
+        : "https://api.rockshairmpire.com");
+
+    return [
       {
         source: "/__/auth/:path*",
         destination: `https://${firebaseAuthHost}/__/auth/:path*`,
       },
-    ];
-
-    // Local-only proxy so /api/v1 hits Nest on :4000 during development
-    if (process.env.NODE_ENV === "development") {
-      rewrites.push({
+      {
         source: "/api/v1/:path*",
-        destination: "http://localhost:4000/api/v1/:path*",
-      });
-    }
-
-    return rewrites;
+        destination: `${apiProxyTarget.replace(/\/$/, "")}/api/v1/:path*`,
+      },
+    ];
   },
   images: {
     remotePatterns: [

@@ -14,6 +14,7 @@ import authConfig from '../config/auth.config';
 import { CartsService } from 'src/carts/carts.service';
 import type { Response } from 'express';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { authCookieOptions } from './cookie-options';
 
 @Injectable()
 export class AuthService {
@@ -132,15 +133,8 @@ export class AuthService {
   }
 
   async logout(res: Response) {
-    res.clearCookie('access_token', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-    res.clearCookie('refresh_token', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
+    const base = authCookieOptions();
+    res.clearCookie('access_token', base);
+    res.clearCookie('refresh_token', base);
   }
 }

@@ -232,16 +232,14 @@ describe('AuthService', () => {
       await service.logout(res);
 
       expect(res.clearCookie).toHaveBeenCalledTimes(2);
-      expect(res.clearCookie).toHaveBeenCalledWith('access_token', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-      });
-      expect(res.clearCookie).toHaveBeenCalledWith('refresh_token', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-      });
+      expect(res.clearCookie).toHaveBeenCalledWith(
+        'access_token',
+        expect.objectContaining({ httpOnly: true, path: '/' }),
+      );
+      expect(res.clearCookie).toHaveBeenCalledWith(
+        'refresh_token',
+        expect.objectContaining({ httpOnly: true, path: '/' }),
+      );
     });
   });
 });

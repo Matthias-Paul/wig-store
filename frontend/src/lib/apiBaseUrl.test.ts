@@ -19,4 +19,9 @@ describe("getApiBaseUrl", () => {
     const { getApiBaseUrl } = await import("./apiBaseUrl");
     expect(getApiBaseUrl()).toBe("https://api.example.com/api/v1");
   });
+
+  it("defaults to same-origin /api/v1", async () => {
+    const { getApiBaseUrl } = await import("./apiBaseUrl");
+    expect(getApiBaseUrl()).toBe("/api/v1");
+  });
 });

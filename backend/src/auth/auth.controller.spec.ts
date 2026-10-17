@@ -58,12 +58,12 @@ describe('AuthController', () => {
       expect(res.cookie).toHaveBeenCalledWith(
         'access_token',
         'access',
-        expect.objectContaining({ httpOnly: true, secure: true }),
+        expect.objectContaining({ httpOnly: true, sameSite: 'lax', path: '/' }),
       );
       expect(res.cookie).toHaveBeenCalledWith(
         'refresh_token',
         'refresh',
-        expect.objectContaining({ httpOnly: true, secure: true }),
+        expect.objectContaining({ httpOnly: true, sameSite: 'lax', path: '/' }),
       );
       expect(result).toEqual({
         success: true,

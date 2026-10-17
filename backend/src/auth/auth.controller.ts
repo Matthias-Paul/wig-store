@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { AllowAnonymous } from 'src/common/decorators/allow-anonymous.decorator';
 import { ActiveUser } from 'src/common/decorators/active-user.decorator';
+import { authCookieOptions } from './cookie-options';
 
 @Controller('auth')
 export class AuthController {
@@ -26,18 +27,16 @@ export class AuthController {
     const { user, accessToken, refreshToken } =
       await this.authService.googleAuth(dto.idToken, dto.guestId);
 
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: true, 
-      sameSite: 'none',
-      maxAge: 15 * 60 * 1000,
-    });
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie(
+      'access_token',
+      accessToken,
+      authCookieOptions(15 * 60 * 1000),
+    );
+    res.cookie(
+      'refresh_token',
+      refreshToken,
+      authCookieOptions(7 * 24 * 60 * 60 * 1000),
+    );
 
     return {
       success: true,
@@ -72,12 +71,11 @@ export class AuthController {
     const { accessToken } =
       await this.authService.refreshAccessToken(refreshToken);
 
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 15 * 60 * 1000,
-    });
+    res.cookie(
+      'access_token',
+      accessToken,
+      authCookieOptions(15 * 60 * 1000),
+    );
 
     return { message: 'Token refreshed' };
   }
