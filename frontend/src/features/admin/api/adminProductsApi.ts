@@ -1,4 +1,5 @@
 import { apiFetch } from "@/src/lib/apiClient";
+import { getApiBaseUrl } from "@/src/lib/apiBaseUrl";
 import type {
   Product,
   PaginatedProducts,
@@ -105,7 +106,7 @@ export async function uploadImage(file: File): Promise<{ imageUrl: string }> {
   const formData = new FormData();
   formData.append("image", file);
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL ?? ""}/uploads/image`,
+    `${getApiBaseUrl()}/uploads/image`,
     {
       method: "POST",
       credentials: "include",

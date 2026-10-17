@@ -1,12 +1,17 @@
 {
   "name": "wig-store",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Rocks Hairmpire — NestJS API + Next.js storefront",
+  "private": true,
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
     "build": "npm run build --prefix backend && npm run build --prefix frontend",
-    "start": "concurrently --kill-others \"npm run start:prod --prefix backend\" \"npm run start --prefix frontend\""
+    "build:backend": "npm run build --prefix backend",
+    "build:frontend": "npm run build --prefix frontend",
+    "start": "concurrently --kill-others \"npm run start:prod --prefix backend\" \"npm run start --prefix frontend\"",
+    "start:backend": "npm run start:prod --prefix backend",
+    "start:frontend": "npm run start --prefix frontend",
+    "migration:run": "npm run migration:run --prefix backend"
   },
   "dependencies": {
     "concurrently": "^8.2.2"
@@ -18,8 +23,6 @@
     "type": "git",
     "url": "git+https://github.com/Matthias-Paul/wig-store.git"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {

@@ -1,12 +1,7 @@
-const PRODUCTION_API = "https://wig-store-1.onrender.com/api/v1";
+import { getApiBaseUrl } from "@/src/lib/apiBaseUrl";
 
 function getBaseUrl() {
-  // Optional: set NEXT_PUBLIC_API_BASE_URL=/api/v1 when running Nest locally on :4000
-  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
-    return process.env.NEXT_PUBLIC_API_BASE_URL.replace(/\/$/, "");
-  }
-
-  return PRODUCTION_API;
+  return getApiBaseUrl();
 }
 
 let isRefreshing = false;
@@ -30,6 +25,12 @@ async function refreshAccessToken(): Promise<boolean> {
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const baseUrl = getBaseUrl();
+  if (!baseUrl) {
+    throw new Error(
+      "API base URL is not configured. Set NEXT_PUBLIC_API_BASE_URL.",
+    );
+  }
+
   const res = await fetch(`${baseUrl}${path}`, {
     ...options,
     credentials: "include",

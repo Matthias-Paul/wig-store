@@ -30,6 +30,8 @@ async function bootstrap() {
     'http://localhost:3000',
     'http://localhost:4000',
     process.env.FRONTEND_URL,
+    'https://rockshairmpire.com',
+    'https://www.rockshairmpire.com',
     'https://www.rocks-hairmpire.com',
   ]
     .filter((origin): origin is string => Boolean(origin))
@@ -37,7 +39,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: corsOrigins,
-    methods: ['GET', 'POST', 'PUT', 'DELETE',   'PATCH', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Guest-Id'],
     exposedHeaders: ['Content-Type', 'Authorization'],
@@ -60,7 +62,10 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.INTERNAL_API_PORT || 4000;
+  // Passenger / cPanel sets PORT; keep INTERNAL_API_PORT for local Nest
+  const port = Number(
+    process.env.PORT || process.env.INTERNAL_API_PORT || 4000,
+  );
 
   await app.listen(port, '0.0.0.0');
 }
