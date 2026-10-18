@@ -24,21 +24,12 @@ const nextConfig: NextConfig = {
       process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
       "rocks-hairmpire.firebaseapp.com";
 
-    // Browser calls same-origin /api/v1 → Nest (avoids third-party cookies on iOS)
-    const apiProxyTarget =
-      process.env.API_PROXY_TARGET ||
-      (process.env.NODE_ENV === "development"
-        ? "http://localhost:4000"
-        : "https://api.rockshairmpire.com");
-
+    // /api/v1/* is handled by app/api/v1/[...path]/route.ts (more reliable than
+    // external rewrites on cPanel/Passenger — preserves cookies & response bodies).
     return [
       {
         source: "/__/auth/:path*",
         destination: `https://${firebaseAuthHost}/__/auth/:path*`,
-      },
-      {
-        source: "/api/v1/:path*",
-        destination: `${apiProxyTarget.replace(/\/$/, "")}/api/v1/:path*`,
       },
     ];
   },

@@ -10,10 +10,8 @@ export function ProductCard({ product }: { product: Product }) {
   const hasStock = (product.variantCount ?? 0) > 0;
   const productImages = parseProductImages(product.images);
   const productImage = productImages[0];
-  // Prefer slug; fall back to id route when slug is missing/broken in DB
-  const href = product.slug?.trim()
-    ? `/products/${product.slug.trim()}`
-    : `/products/id/${product.id}`;
+  // Id route is the reliable storefront detail URL (slug proxy/DB mismatches 404).
+  const href = `/products/id/${product.id}`;
 
   return (
     <Card padding="none" className="overflow-hidden">

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { getProductBySlug } from "../api/productsApi";
+import { getProductById, getProductBySlug } from "../api/productsApi";
 import {
   createQueryWrapper,
   renderHook,
@@ -15,6 +15,7 @@ vi.mock("../api/productsApi", () => ({
 describe("useProductDetail", () => {
   beforeEach(() => {
     vi.mocked(getProductBySlug).mockReset();
+    vi.mocked(getProductById).mockReset();
   });
 
   it("does not fetch when slug is empty", () => {

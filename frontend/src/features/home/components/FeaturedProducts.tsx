@@ -7,14 +7,14 @@ import { ProductCard } from "@/src/features/products/components/ProductCard";
 import { ProductGridSkeleton } from "@/src/features/products/components/ProductGridSkeleton";
 
 export function FeaturedProducts() {
-  const { data, isLoading, isError } = useProducts({ limit: 8 });
-
-  if (isError) return null;
+  const { data, isLoading, isError, refetch, isFetching } = useProducts({
+    limit: 8,
+  });
 
   const products = data?.products ?? [];
   const hasDiscounts = products.some((p) => p.isOnDiscount);
 
-  if (!isLoading && products.length === 0) return null;
+  if (!isLoading && !isError && products.length === 0) return null;
 
   return (
     <section className="relative py-16 md:py-20 bg-gray-50/70">
@@ -42,6 +42,20 @@ export function FeaturedProducts() {
 
         {isLoading ? (
           <ProductGridSkeleton />
+        ) : isError ? (
+          <div className="text-center py-10">
+            <p className="text-sm text-gray-500 mb-3">
+              Couldn&apos;t load products. Please try again.
+            </p>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="text-sm font-medium text-brand hover:underline disabled:opacity-50"
+            >
+              {isFetching ? "Retrying…" : "Retry"}
+            </button>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
             {products.slice(0, 8).map((product, index) => (

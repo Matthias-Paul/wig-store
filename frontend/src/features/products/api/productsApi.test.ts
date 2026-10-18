@@ -2,16 +2,24 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { apiFetch } from "@/src/lib/apiClient";
 import { getProductById, getProductBySlug, getProducts } from "./productsApi";
 
-vi.mock("@/src/lib/apiClient", () => ({
-  apiFetch: vi.fn(),
-}));
+vi.mock("@/src/lib/apiClient", async () => {
+  const actual = await vi.importActual<typeof import("@/src/lib/apiClient")>(
+    "@/src/lib/apiClient",
+  );
+  return {
+    ...actual,
+    apiFetch: vi.fn(),
+  };
+});
 
 const apiFetchMock = vi.mocked(apiFetch);
 
 function jsonRes(data: unknown, ok = true): Response {
+  const body = data === undefined ? "" : JSON.stringify(data);
   return {
     ok,
     status: ok ? 200 : 404,
+    text: vi.fn().mockResolvedValue(body),
     json: vi.fn().mockResolvedValue(data),
   } as unknown as Response;
 }
@@ -19,7 +27,6 @@ function jsonRes(data: unknown, ok = true): Response {
 describe("productsApi", () => {
   beforeEach(() => {
     apiFetchMock.mockReset();
-    vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
   it("getProducts returns paginated data on success", async () => {
@@ -45,7 +52,9 @@ describe("productsApi", () => {
 
   it("getProductBySlug throws when not found", async () => {
     apiFetchMock.mockResolvedValue(jsonRes(null, false));
-    await expect(getProductBySlug("missing")).rejects.toThrow("Product not found");
+    await expect(getProductBySlug("missing")).rejects.toThrow(
+      "Product not found",
+    );
   });
 
   it("getProductById returns a product on success", async () => {

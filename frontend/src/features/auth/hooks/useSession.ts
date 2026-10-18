@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiFetch } from '@/src/lib/apiClient';
+import { apiFetch, parseApiJson } from '@/src/lib/apiClient';
 import { requestPushToken } from '@/src/lib/fcm';
 import { useEffect } from 'react';
 import { registerDeviceToken } from '../../notifications/api/notificationsApi';
@@ -15,7 +15,11 @@ interface User {
 async function fetchSession(): Promise<User | null> {
   const res = await apiFetch('/auth/me');
   if (!res.ok) return null;
-  return res.json();
+  try {
+    return await parseApiJson<User>(res);
+  } catch {
+    return null;
+  }
 }
 
 export function useSession() {
