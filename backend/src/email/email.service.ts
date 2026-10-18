@@ -75,7 +75,10 @@ export class EmailService {
                     ${BRAND_NAME} &mdash; Rock every hair with confidence.
                   </p>
                   <p style="margin:6px 0 0 0; font-size:12px; color:#aaaaaa;">
-                    If you have any questions about your order, simply reply to this email or contact our support team.
+                    If you have any questions about your order, reply to this email or contact
+                    <a href="mailto:${this.config.supportEmail}" style="color:${BRAND_COLOR}; text-decoration:none;">
+                      ${this.config.supportEmail}
+                    </a>.
                   </p>
                 </td>
               </tr>

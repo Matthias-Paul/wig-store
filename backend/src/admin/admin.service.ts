@@ -54,9 +54,9 @@ export class AdminService {
       pendingOrdersCount,
     ] = await Promise.all([
       this.orderRepo
-        .createQueryBuilder('order')
-        .select('SUM(order.totalAmount)', 'sum')
-        .where('order.status NOT IN (:...excluded)', {
+        .createQueryBuilder('ord')
+        .select('SUM(ord.totalAmount)', 'sum')
+        .where('ord.status NOT IN (:...excluded)', {
           excluded: EXCLUDED_FROM_REVENUE,
         })
         .getRawOne<{ sum: string | null }>(),
@@ -79,7 +79,7 @@ export class AdminService {
       totalProducts,
       totalCustomers,
       lowStockCount,
-      //   pendingOrdersCount,
+      pendingOrdersCount,
     };
   }
 
@@ -127,14 +127,14 @@ export class AdminService {
     const dateFormat = groupBy === 'day' ? 'YYYY-MM-DD' : 'YYYY-MM';
 
     const rows = await this.orderRepo
-      .createQueryBuilder('order')
-      .select(`TO_CHAR(order.createdAt, '${dateFormat}')`, 'period')
-      .addSelect('SUM(order.totalAmount)', 'revenue')
+      .createQueryBuilder('ord')
+      .select(`TO_CHAR(ord.createdAt, '${dateFormat}')`, 'period')
+      .addSelect('SUM(ord.totalAmount)', 'revenue')
       .addSelect('COUNT(*)', 'orderCount')
-      .where('order.status NOT IN (:...excluded)', {
+      .where('ord.status NOT IN (:...excluded)', {
         excluded: EXCLUDED_FROM_REVENUE,
       })
-      .andWhere(`order.createdAt >= NOW() - INTERVAL '${days} days'`)
+      .andWhere(`ord.createdAt >= NOW() - INTERVAL '${days} days'`)
       .groupBy('period')
       .orderBy('period', 'ASC')
       .getRawMany<{ period: string; revenue: string; orderCount: string }>();
@@ -150,10 +150,10 @@ export class AdminService {
 
   async getOrdersByStatus() {
     const rows = await this.orderRepo
-      .createQueryBuilder('order')
-      .select('order.status', 'status')
+      .createQueryBuilder('ord')
+      .select('ord.status', 'status')
       .addSelect('COUNT(*)', 'count')
-      .groupBy('order.status')
+      .groupBy('ord.status')
       .getRawMany<{ status: OrderStatus; count: string }>();
 
     // Ensure every status appears in the response, even with zero orders,
@@ -180,17 +180,17 @@ export class AdminService {
 
     const qb = this.paymentRepo
       .createQueryBuilder('payment')
-      .leftJoinAndSelect('payment.order', 'order')
+      .leftJoinAndSelect('payment.order', 'ord')
       .select([
         'payment.id',
         'payment.reference',
         'payment.status',
         'payment.amount',
         'payment.createdAt',
-        'order.id',
-        'order.orderNumber',
-        'order.recipientName',
-        'order.recipientEmail',
+        'ord.id',
+        'ord.orderNumber',
+        'ord.recipientName',
+        'ord.recipientEmail',
       ]);
 
     if (status) {
@@ -200,11 +200,11 @@ export class AdminService {
     if (search) {
       qb.andWhere(
         `(payment.reference ILIKE :search 
-        OR order.orderNumber ILIKE :search 
-        OR order.recipientName ILIKE :search)`,
+        OR ord.orderNumber ILIKE :search 
+        OR ord.recipientName ILIKE :search)`,
         { search: `%${search}%` },
       );
-    }  
+    }
 
     const [payments, total] = await qb
       .orderBy('payment.createdAt', 'DESC')

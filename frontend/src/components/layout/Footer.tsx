@@ -1,9 +1,10 @@
 // components/layout/Footer.tsx
-import Link from 'next/link';
-import {  Mail, Phone, MapPin } from 'lucide-react';
+import Link from "next/link";
+import { Mail, Phone, MapPin } from "lucide-react";
 // import { Input } from '@/src/components/ui/Input';
 // import { Button } from '@/src/components/ui/Button';
 import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa";
+import { SUPPORT_EMAIL, SUPPORT_MAILTO } from "@/src/lib/support";
 
 export function Footer() {
   return (
@@ -186,7 +187,12 @@ export function Footer() {
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-start gap-2">
                 <Mail size={15} className="mt-0.5 flex-shrink-0" />
-                <span>support@rockshairmpire.com</span>
+                <a
+                  href={SUPPORT_MAILTO}
+                  className="hover:text-white transition-colors"
+                >
+                  {SUPPORT_EMAIL}
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <Phone size={15} className="mt-0.5 flex-shrink-0" />

@@ -5,7 +5,7 @@ export interface AdminStats {
   totalProducts: number;
   totalCustomers: number;
   lowStockCount: number;
-//   pendingOrdersCount: number;
+  pendingOrdersCount: number;
 }
 
 export interface RevenueChartPoint {

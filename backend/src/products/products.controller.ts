@@ -29,25 +29,11 @@ export class ProductsController {
     return this.productsService.findAll(query);
   }
 
+  // Static paths MUST be registered before @Get(':slug')
   @Get('admin/all')
   @Roles(UserRole.ADMIN)
   findAllForAdmin(@Query() query: GetProductsQueryDto) {
     return this.productsService.findAllForAdmin(query);
-  }
-
-  @Patch(':id/status')
-  @Roles(UserRole.ADMIN)
-  updateStatus(
-    @Param() params: ProductIdParamDto,
-    @Body() dto: UpdateProductStatusDto,
-  ) {
-    return this.productsService.updateStatus(params.id, dto);
-  }
-
-  @Get(':slug')
-  @AllowAnonymous()
-  findBySlug(@Param('slug') slug: string) {
-    return this.productsService.findBySlug(slug);
   }
 
   @Get('get/:id')
@@ -60,6 +46,21 @@ export class ProductsController {
   @Roles(UserRole.ADMIN)
   findById(@Param('id') id: string) {
     return this.productsService.findById(id);
+  }
+
+  @Get(':slug')
+  @AllowAnonymous()
+  findBySlug(@Param('slug') slug: string) {
+    return this.productsService.findBySlug(slug);
+  }
+
+  @Patch(':id/status')
+  @Roles(UserRole.ADMIN)
+  updateStatus(
+    @Param() params: ProductIdParamDto,
+    @Body() dto: UpdateProductStatusDto,
+  ) {
+    return this.productsService.updateStatus(params.id, dto);
   }
 
   @Post()

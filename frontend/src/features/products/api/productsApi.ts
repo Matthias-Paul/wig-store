@@ -1,4 +1,3 @@
-
 import { apiFetch } from "@/src/lib/apiClient";
 import type {
   PaginatedProducts,
@@ -16,18 +15,18 @@ export async function getProducts(
 
   const res = await apiFetch(`/products?${query.toString()}`);
   if (!res.ok) throw new Error("Failed to load products");
-  console.log("getProducts response:", res);
   return res.json();
 }
 
 export async function getProductBySlug(slug: string): Promise<Product> {
-  const res = await apiFetch(`/products/${slug}`);
+  const safeSlug = encodeURIComponent(slug.trim());
+  const res = await apiFetch(`/products/${safeSlug}`);
   if (!res.ok) throw new Error("Product not found");
   return res.json();
 }
 
 export async function getProductById(id: string): Promise<Product> {
-  const res = await apiFetch(`/products/get/${id}`);
+  const res = await apiFetch(`/products/get/${encodeURIComponent(id)}`);
   if (!res.ok) throw new Error("Product not found");
   return res.json();
 }

@@ -1,3 +1,5 @@
+import { SUPPORT_EMAIL, SUPPORT_MAILTO } from "@/src/lib/support";
+
 export default function ReturnsRefundsPage() {
   return (
     <main className="bg-white">
@@ -162,8 +164,14 @@ export default function ReturnsRefundsPage() {
 
               <p>
                 If you have an issue with your order or believe you received the
-                wrong product, please contact our customer service team within
-                24 hours of receiving your order.
+                wrong product, please contact our customer service team at{" "}
+                <a
+                  href={SUPPORT_MAILTO}
+                  className="font-medium text-brand hover:underline"
+                >
+                  {SUPPORT_EMAIL}
+                </a>{" "}
+                within 24 hours of receiving your order.
               </p>
             </section>
           </div>

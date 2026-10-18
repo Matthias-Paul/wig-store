@@ -160,8 +160,35 @@ describe('ProductsService', () => {
       expect(result.variants[0].discountedPrice).toBe(50);
     });
 
+    it('resolves UUID slugs via public id lookup', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...product,
+        status: ProductStatus.PUBLISHED,
+        variants: [{ id: 'v1', price: 50 }],
+      });
+
+      const result = await service.findBySlug(
+        'a5800575-c977-4f17-bfb6-d280f0a114e8',
+      );
+
+      expect(result.id).toBe('prod-1');
+      expect(productRepo.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            id: 'a5800575-c977-4f17-bfb6-d280f0a114e8',
+          }),
+        }),
+      );
+    });
+
     it('throws when not found', async () => {
       productRepo.findOne.mockResolvedValue(null);
+      productRepo.createQueryBuilder.mockReturnValue({
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(null),
+      });
 
       await expect(service.findBySlug('missing')).rejects.toThrow(
         NotFoundException,
@@ -247,29 +274,37 @@ describe('ProductsService', () => {
       expect(categoryService.findById).toHaveBeenCalledWith('cat-1');
     });
 
-    it('throws on duplicate slug', async () => {
-      productRepo.findOne.mockResolvedValue({ id: 'other' });
+    it('appends a numeric suffix when slug already exists', async () => {
+      productRepo.findOne
+        .mockResolvedValueOnce({ id: 'other', slug: 'silk-wig' })
+        .mockResolvedValueOnce(null);
+      productRepo.save.mockImplementation(async (entity) => entity as never);
 
-      await expect(
-        service.create({
-          name: 'Silk Wig',
-          description: 'd',
-          images: [],
-          categoryId: 'cat-1',
-        } as never),
-      ).rejects.toThrow(ConflictException);
+      const result = await service.create({
+        name: 'Silk Wig',
+        description: 'd',
+        images: [],
+        categoryId: 'cat-1',
+      } as never);
+
+      expect(result.slug).toBe('silk-wig-2');
     });
   });
 
   describe('update', () => {
-    it('throws when renamed slug conflicts', async () => {
+    it('uses a suffixed slug when renamed name conflicts', async () => {
       productRepo.findOne
         .mockResolvedValueOnce(product)
-        .mockResolvedValueOnce({ id: 'other', slug: 'taken-name' });
+        .mockResolvedValueOnce({ id: 'other', slug: 'taken-name' })
+        .mockResolvedValueOnce(null);
+      productRepo.save.mockImplementation(async (entity) => entity as never);
 
-      await expect(
-        service.update('prod-1', { name: 'Taken Name' } as never),
-      ).rejects.toThrow(ConflictException);
+      const result = await service.update('prod-1', {
+        name: 'Taken Name',
+      } as never);
+
+      expect(result.slug).toBe('taken-name-2');
+      expect(result.name).toBe('Taken Name');
     });
 
     it('updates and saves product', async () => {

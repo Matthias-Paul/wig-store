@@ -17,9 +17,8 @@ import { Skeleton } from "@/src/components/ui/Skeleton";
 import { useSession } from "@/src/features/auth/hooks/useSession";
 
 export default function AdminDashboardPage() {
-  const { data: stats, isLoading } = useAdminStats();
-    const { user } = useSession();
-  
+  const { data: stats, isLoading, isError, error } = useAdminStats();
+  const { user } = useSession();
 
   return (
     <AdminLayout title="Dashboard">
@@ -34,49 +33,49 @@ export default function AdminDashboardPage() {
             <Skeleton key={i} className="h-28 w-full rounded-xl" />
           ))}
         </div>
+      ) : isError ? (
+        <p className="text-sm text-red-600 mb-4">
+          Could not load dashboard stats
+          {error instanceof Error ? `: ${error.message}` : "."} Check Network
+          for <code className="text-xs">/api/v1/admin/stats</code>.
+        </p>
       ) : stats ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard
             label="Total Revenue"
-            value={`₦${stats.totalRevenue.toLocaleString()}`}
+            value={`₦${Number(stats.totalRevenue ?? 0).toLocaleString()}`}
             icon={DollarSign}
             accent="brand"
           />
           <StatCard
             label="Total Orders"
-            value={stats.totalOrders.toString()}
+            value={String(stats.totalOrders ?? 0)}
             icon={ShoppingBag}
             accent="success"
           />
           <StatCard
             label="Paid Orders"
-            value={stats.totalPaidOrders.toString()}
+            value={String(stats.totalPaidOrders ?? 0)}
             icon={ShoppingBag}
             accent="success"
           />
-          {/* <StatCard
-            label="Pending Payment"
-            value={stats.pendingOrdersCount.toString()}
-            icon={Clock}
-            accent="warning"
-          /> */}
           <StatCard
             label="Total Products"
-            value={stats.totalProducts.toString()}
+            value={String(stats.totalProducts ?? 0)}
             icon={Package}
             accent="gold"
           />
           <StatCard
             label="Total Customers"
-            value={stats.totalCustomers.toString()}
+            value={String(stats.totalCustomers ?? 0)}
             icon={Users}
             accent="brand"
           />
           <StatCard
             label="Low Stock Alerts"
-            value={stats.lowStockCount.toString()}
+            value={String(stats.lowStockCount ?? 0)}
             icon={AlertTriangle}
-            accent={stats.lowStockCount > 0 ? "error" : "success"}
+            accent={(stats.lowStockCount ?? 0) > 0 ? "error" : "success"}
           />
         </div>
       ) : null}

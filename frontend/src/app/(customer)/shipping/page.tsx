@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SUPPORT_EMAIL, SUPPORT_MAILTO } from "@/src/lib/support";
 
 export default function ShippingPolicyPage() {
   return (
@@ -82,7 +83,14 @@ export default function ShippingPolicyPage() {
 
             <p className="mt-3 leading-7 text-gray-600">
               If you do not receive your confirmation email by the stipulated
-              processing period, please contact our customer support team.
+              processing period, please contact our customer support team at{" "}
+              <a
+                href={SUPPORT_MAILTO}
+                className="font-medium text-brand hover:underline"
+              >
+                {SUPPORT_EMAIL}
+              </a>
+              .
             </p>
           </section>
 

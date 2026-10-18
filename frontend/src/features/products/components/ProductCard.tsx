@@ -8,15 +8,18 @@ import { parseProductImages } from "@/src/lib/parseProductImages";
 
 export function ProductCard({ product }: { product: Product }) {
   const hasStock = (product.variantCount ?? 0) > 0;
-
- const productImages = parseProductImages(product.images);
- const productImage = productImages[0] 
+  const productImages = parseProductImages(product.images);
+  const productImage = productImages[0];
+  // Prefer slug; fall back to id route when slug is missing/broken in DB
+  const href = product.slug?.trim()
+    ? `/products/${product.slug.trim()}`
+    : `/products/id/${product.id}`;
 
   return (
     <Card padding="none" className="overflow-hidden">
-      <Link href={`/products/${product.slug}`}>
+      <Link href={href}>
         <Image
-          src={productImage} 
+          src={productImage}
           alt={product.name}
           width={500}
           height={300}
@@ -26,12 +29,12 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div className="p-4">
-        <Link href={`/products/${product.slug}`}>
+        <Link href={href}>
           <h3 className="font-heading text-black text-lg truncate">
             {product.name}
           </h3>
         </Link>
-        <p className="text-xs text-gray-500">{product.category.name}</p>
+        <p className="text-xs text-gray-500">{product.category?.name}</p>
 
         <div className="flex items-center gap-2 mt-1 flex-wrap">
           {product.isOnDiscount ? (
@@ -52,7 +55,7 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {hasStock ? (
-          <Link href={`/products/${product.slug}`}>
+          <Link href={href}>
             <Button variant="primary" className="w-full mt-3">
               View Options
             </Button>

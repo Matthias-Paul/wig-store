@@ -1,4 +1,5 @@
 import { Accordion } from "@/src/components/ui/Accordion";
+import { SUPPORT_MAILTO } from "@/src/lib/support";
 
 const FAQ_ITEMS = [
   {
@@ -53,7 +54,7 @@ export default function FAQPage() {
       <div className="text-center mt-10">
         <p className="text-sm ">Still have questions?</p>
         <a
-          href="mailto:support@rockshairmpire.com"
+          href={SUPPORT_MAILTO}
           className="text-brand text-sm font-medium hover:underline"
         >
           Contact our support team

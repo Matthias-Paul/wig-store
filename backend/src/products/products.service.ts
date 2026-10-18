@@ -84,6 +84,48 @@ export class ProductsService {
     }, {});
   }
 
+  private isUuid(value: string): boolean {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    );
+  }
+
+  private async ensureUniqueSlug(
+    base: string,
+    excludeId?: string,
+  ): Promise<string> {
+    const root = slugify(base);
+    let candidate = root;
+    let i = 2;
+
+    while (true) {
+      const existing = await this.productRepo.findOne({
+        where: { slug: candidate },
+      });
+      if (!existing || existing.id === excludeId) {
+        return candidate;
+      }
+      candidate = `${root}-${i}`;
+      i += 1;
+    }
+  }
+
+  private mapProductDetail(product: Product) {
+    const discountActive = isDiscountActive(product);
+
+    return {
+      ...product,
+      isOnDiscount: discountActive,
+      variants: (product.variants ?? []).map((variant) => ({
+        ...variant,
+        originalPrice: variant.price,
+        discountedPrice: discountActive
+          ? getDiscountedPrice(Number(variant.price), product)
+          : Number(variant.price),
+      })),
+    };
+  }
+
   async findAll(query: GetProductsQueryDto) {
     const {
       search,
@@ -244,27 +286,45 @@ export class ProductsService {
     };
   }
   async findBySlug(slug: string) {
-    const product = await this.productRepo.findOne({
-      where: { slug, status: ProductStatus.PUBLISHED },
+    let decoded = slug?.trim() ?? '';
+    try {
+      decoded = decodeURIComponent(decoded);
+    } catch {
+      // keep raw slug if it was not URI-encoded
+    }
+
+    if (!decoded) {
+      throw new NotFoundException('Product not found');
+    }
+
+    // Support /products/:uuid links (and mis-routed id URLs)
+    if (this.isUuid(decoded)) {
+      return this.findByIdPublic(decoded);
+    }
+
+    let product = await this.productRepo.findOne({
+      where: { slug: decoded, status: ProductStatus.PUBLISHED },
       relations: { category: true, variants: true },
     });
+
+    // Case-insensitive fallback for older/manual slug rows
+    if (!product) {
+      product = await this.productRepo
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.category', 'category')
+        .leftJoinAndSelect('product.variants', 'variants')
+        .where('LOWER(product.slug) = LOWER(:slug)', { slug: decoded })
+        .andWhere('product.status = :status', {
+          status: ProductStatus.PUBLISHED,
+        })
+        .getOne();
+    }
+
     if (!product) {
       throw new NotFoundException('Product not found');
     }
 
-    const discountActive = isDiscountActive(product);
-
-    return {
-      ...product,
-      isOnDiscount: discountActive,
-      variants: product.variants.map((variant) => ({
-        ...variant,
-        originalPrice: variant.price,
-        discountedPrice: discountActive
-          ? getDiscountedPrice(Number(variant.price), product)
-          : Number(variant.price),
-      })),
-    };
+    return this.mapProductDetail(product);
   }
 
   async findByIdPublic(id: string) {
@@ -272,24 +332,11 @@ export class ProductsService {
       where: { id, status: ProductStatus.PUBLISHED },
       relations: { category: true, variants: true },
     });
-    console.log(product, id);
     if (!product) {
       throw new NotFoundException('Product not found');
     }
 
-    const discountActive = isDiscountActive(product);
-
-    return {
-      ...product,
-      isOnDiscount: discountActive,
-      variants: product.variants.map((variant) => ({
-        ...variant,
-        originalPrice: variant.price,
-        discountedPrice: discountActive
-          ? getDiscountedPrice(Number(variant.price), product)
-          : Number(variant.price),
-      })),
-    };
+    return this.mapProductDetail(product);
   }
 
   async findById(id: string) {
@@ -328,12 +375,7 @@ export class ProductsService {
   }
 
   async create(dto: CreateProductDto) {
-    const slug = slugify(dto.name);
-
-    const existing = await this.productRepo.findOne({ where: { slug } });
-    if (existing) {
-      throw new ConflictException('A product with this name already exists');
-    }
+    const slug = await this.ensureUniqueSlug(dto.name);
 
     await this.categoryService.findById(dto.categoryId);
 
@@ -356,14 +398,7 @@ export class ProductsService {
     }
 
     if (dto.name) {
-      const newSlug = slugify(dto.name);
-      const existing = await this.productRepo.findOne({
-        where: { slug: newSlug },
-      });
-      if (existing && existing.id !== id) {
-        throw new ConflictException('A product with this name already exists');
-      }
-      product.slug = newSlug;
+      product.slug = await this.ensureUniqueSlug(dto.name, id);
       product.name = dto.name;
     }
 

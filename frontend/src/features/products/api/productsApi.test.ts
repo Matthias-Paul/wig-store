@@ -40,6 +40,7 @@ describe("productsApi", () => {
     apiFetchMock.mockResolvedValue(jsonRes(product));
 
     await expect(getProductBySlug("wig-a")).resolves.toEqual(product);
+    expect(apiFetchMock).toHaveBeenCalledWith("/products/wig-a");
   });
 
   it("getProductBySlug throws when not found", async () => {
@@ -52,6 +53,7 @@ describe("productsApi", () => {
     apiFetchMock.mockResolvedValue(jsonRes(product));
 
     await expect(getProductById("p1")).resolves.toEqual(product);
+    expect(apiFetchMock).toHaveBeenCalledWith("/products/get/p1");
   });
 
   it("getProductById throws when not found", async () => {
