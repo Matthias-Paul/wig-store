@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Shared hosting (cPanel) has low process/thread limits; Next defaults spawn too many workers.
+  experimental: {
+    workerThreads: false,
+    cpus: 1,
+  },
   async headers() {
     return [
       {
